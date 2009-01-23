@@ -1,0 +1,57 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+a { color: #0050cf; font-weight: normal; text-decoration: underline; padding-right: 2px; }
+body { color: #707070; font-family: arial; font-weight: normal; padding: 10px; margin:10px; height: 100%; }
+
+.bordered { width: 700px; padding: 10px; border-width: 1px; border-style: solid; border-color: #909090; }
+.fieldError { background-color: #fa7d00; }
+.feedbackPanelERROR { color: #d03030; list-style: none; font-style: italic; padding-bottom: 6px; }
+.feedbackPanelINFO { color: #009000; list-style: none; padding-bottom: 6px; }
+.letter { color: #da8d00; font-style: bold; font-size: 30px; }
+.links { color: #da8d00; font-style: bold; font-size: 20px; }
+.title { color: #da8d00; font-style: bold; font-size: 20px; }
+.trickDescription { background-color: #f0f0f0; color: #404040; width: 700px; padding: 10px; border-width: 1px; border-style: solid; border-color: #d0d0d0; }
+
+table.datatable {
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ff7d00;
+	width: 740px;
+	font-size: 1em;
+	font-family: arial;
+}
+ 
+table.datatable tr { padding-top: 3px; padding-bottom: 3px; }
+table.datatable tr.odd { background-color: #fff0c0; }
+table.datatable tr.even { background-color: #fff; }
+table.datatable tr td { width:220px; padding-left: 8px; padding-right: 30px; }
+
+/* NAVIGATION */
+table.datatable tr.navigation { text-align: left; }
+table.datatable tr.navigation td { height: 40px; padding-right: 0px;}
+
+/* HEADERS */
+table.datatable tr th { font-weight: normal; padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 24px; 
+                   background-color: #ff7d00; border-bottom: 1px solid #cf4d00; border-top: 1px solid #ffbd40; 
+				   border-right: 1px solid #cf4d00; border-left: 1px solid #ffbd40; 
+                   text-align: left; white-space: nowrap; vertical-align: middle; }
+table.datatable tr th a { padding-right: 15px; background-position: right; background-repeat:no-repeat; }
+table.datatable tr th.wicket_orderDown a { color: #ffffff; background-image: url(images/arrow_down.png); }
+table.datatable tr th.wicket_orderUp a { color: #ffffff; background-image: url(images/arrow_up.png); }
+table.datatable tr th.wicket_orderNone a { background-image: url(images/arrow_off.png); }
+
+table.datatable tr th a { font-weight: normal; }

@@ -1,0 +1,47 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+	<head>
+	</head>
+    <body>
+    	<wicket:extend>
+	    	<div wicket:id="globalFeedbackPanel"/>
+	    	<div>
+		    	There is a GlobalFeedbackPanel above and a LocalFeedbackPanel in each of
+		    	the forms below.<br/>The LocalFeedbackPanels show only messages produced
+		    	by components in their respective nested form.<br/>The GlobalFeedbackPanel 
+		    	shows all other messages.
+		    </div>
+			<p/>
+	    	<div wicket:id="localFeedbackContainer" class="bordered" style="width:200px; float:left;">
+		    	<div wicket:id="localFeedbackPanel"/>
+		    	<form wicket:id="form">
+		    		Input some text:<br/>
+		    		<input type="text" wicket:id="requiredTextField"/>
+		    	</form>
+		    </div>
+	    	<div wicket:id="localFeedbackContainer2" class="bordered" style="margin-left: 20px; width:200px; float:left;">
+		    	<div wicket:id="localFeedbackPanel"/>
+		    	<form wicket:id="form">
+		    		Input some text:<br/>
+		    		<input type="text" wicket:id="requiredTextField"/>
+		    	</form>
+		    </div>
+		</wicket:extend>
+	</body>
+</html>
+

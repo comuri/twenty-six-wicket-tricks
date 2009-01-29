@@ -14,15 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.panels.factories.panels;
+package com.locke.library.web.wow.panels.factories.formcomponents;
 
+import java.util.Date;
+
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.model.IModel;
 
-public class AbstractDropDownChoicePanel extends AbstractFieldComponentPanel {
+public class DateFieldPanel extends AbstractTextFieldPanel {
 
-	private static final long serialVersionUID = -6590594319720834079L;
+	private static final long serialVersionUID = 2232889782978056661L;
 
-	public AbstractDropDownChoicePanel(String id, IModel<String> label) {
+	public DateFieldPanel(String id, IModel<String> label, IModel<Date> model) {
 		super(id, label);
+		add(new DateTextField("component", model).add(new DatePicker()));
 	}
 }

@@ -19,7 +19,7 @@ package com.locke.library.web.wow.panels.factories;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.panels.factories.panels.CheckBoxPanel;
+import com.locke.library.web.wow.panels.factories.formcomponents.CheckBoxPanel;
 
 /**
  * Panel factory

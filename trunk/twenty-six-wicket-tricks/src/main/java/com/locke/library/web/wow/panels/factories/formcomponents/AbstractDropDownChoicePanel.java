@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.panels.factories.panels;
+package com.locke.library.web.wow.panels.factories.formcomponents;
 
-import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.IModel;
 
-public class TextFieldPanel extends AbstractTextFieldPanel {
+public class AbstractDropDownChoicePanel extends AbstractFieldComponentPanel {
 
-	private static final long serialVersionUID = 2232889782978056661L;
+	private static final long serialVersionUID = -6590594319720834079L;
 
-	public TextFieldPanel(String id, IModel<String> label, IModel<String> model) {
+	public AbstractDropDownChoicePanel(String id, IModel<String> label) {
 		super(id, label);
-		add(new RequiredTextField<String>("component", model));
 	}
 }

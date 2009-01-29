@@ -14,20 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.panels.factories.panels;
+package com.locke.library.web.wow.panels.factories.formcomponents;
 
-import java.util.List;
-
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
 
-public class DropDownChoicePanel extends AbstractDropDownChoicePanel {
+public class AbstractTextFieldPanel extends AbstractFieldComponentPanel {
 
-	private static final long serialVersionUID = 2232889782978056661L;
+	private static final long serialVersionUID = -6590594319720834079L;
 
-	public <T> DropDownChoicePanel(String id, IModel<String> label,
-			IModel<T> model, IModel<List<? extends T>> choices) {
+	public AbstractTextFieldPanel(String id, IModel<String> label) {
 		super(id, label);
-		add(new DropDownChoice<T>("component", model, choices));
 	}
 }

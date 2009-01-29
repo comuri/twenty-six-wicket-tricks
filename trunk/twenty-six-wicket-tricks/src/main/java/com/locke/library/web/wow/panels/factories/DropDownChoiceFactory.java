@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.panels.factories.formcomponents.DropDownChoicePanel;
+import com.locke.library.web.wow.panels.factories.editors.DropDownChoicePanel;
 
 /**
  * Panel factory
@@ -29,7 +29,7 @@ import com.locke.library.web.wow.panels.factories.formcomponents.DropDownChoiceP
  * @author Jonathan Locke
  */
 public abstract class DropDownChoiceFactory<T> extends
-		AbstractLabeledFormComponentFactory<T> {
+		AbstractLabeledEditorFactory<T> {
 
 	private static final long serialVersionUID = -4967380964319730316L;
 

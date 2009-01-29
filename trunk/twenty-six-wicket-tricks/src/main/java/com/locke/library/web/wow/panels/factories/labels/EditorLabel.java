@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.panels.factories.formcomponents;
+package com.locke.library.web.wow.panels.factories.labels;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public class AbstractFieldComponentPanel extends Panel {
+public class EditorLabel extends Panel {
 
 	private static final long serialVersionUID = 3150846411247504180L;
 
-	public AbstractFieldComponentPanel(String id, IModel<?> model) {
+	public EditorLabel(String id, IModel<?> model) {
 		super(id, model);
 		add(new Label("label", model));
 	}

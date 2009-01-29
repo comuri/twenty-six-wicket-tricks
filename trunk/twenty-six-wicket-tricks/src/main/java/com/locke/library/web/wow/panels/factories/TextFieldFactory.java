@@ -19,14 +19,14 @@ package com.locke.library.web.wow.panels.factories;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.panels.factories.formcomponents.TextFieldPanel;
+import com.locke.library.web.wow.panels.factories.editors.TextFieldPanel;
 
 /**
  * Panel factory
  * 
  * @author Jonathan Locke
  */
-public class TextFieldFactory extends AbstractLabeledFormComponentFactory<String> {
+public class TextFieldFactory extends AbstractLabeledEditorFactory<String> {
 
 	private static final long serialVersionUID = -2021448611077060882L;
 

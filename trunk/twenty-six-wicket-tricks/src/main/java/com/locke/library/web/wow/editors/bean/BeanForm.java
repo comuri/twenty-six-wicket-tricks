@@ -14,25 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.editors.bean;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 
-import org.apache.wicket.markup.html.panel.Panel;
+public class BeanForm<T> extends Form<T> {
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+	private static final long serialVersionUID = -403465131909459230L;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
-
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	public BeanForm(String id, IModel<T> model) {
+		super(id, model);
 	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
 }

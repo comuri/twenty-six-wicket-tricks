@@ -19,11 +19,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.locke</groupId>
-	<artifactId>TwentySixWicketTricks</artifactId>
+	<artifactId>twenty-six-wicket-tricks</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<!-- TODO project name  -->
-	<name>quickstart</name>
+	<name>twenty-six-wicket-tricks</name>
 	<description></description>
 	<!--
 		TODO <organization> <name>company name</name> <url>company url</url>
@@ -54,13 +53,39 @@
 			<artifactId>wicket-datetime</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
+		
+	    <!-- SPRING -->
 
-		<!--  XSTREAM  -->
-        <dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
-  	    </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-spring</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		
+	    <!-- DATABASE -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.6.ga</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.7</version>
+			<scope>runtime</scope>
+		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>

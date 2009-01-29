@@ -24,14 +24,14 @@ import com.locke.library.web.panels.IPanelFactory;
 import com.locke.library.web.panels.feedback.LocalFeedbackContainer;
 import com.locke.library.web.panels.feedback.LocalFeedbackPanel;
 import com.locke.library.web.wow.layouts.ColumnLayout;
-import com.locke.library.web.wow.layouts.IComponentSource;
+import com.locke.library.web.wow.layouts.IPanelSource;
 
 public abstract class AbstractEditor<T> extends Panel {
 
 	private static final long serialVersionUID = 8090922830584929662L;
 
 	public AbstractEditor(String id, IModel<T> model,
-			IComponentSource<Panel> panels) {
+			IPanelSource panels) {
 		super(id);
 		final LocalFeedbackContainer feedbackContainer = new LocalFeedbackContainer(
 				"feedbackContainer");
@@ -47,7 +47,7 @@ public abstract class AbstractEditor<T> extends Panel {
 		return new LocalFeedbackPanel("feedback", feedbackContainer);
 	}
 
-	protected IPanelFactory getFields(final IComponentSource<Panel> panels) {
+	protected IPanelFactory getFields(final IPanelSource panels) {
 		return new IPanelFactory() {
 			public Panel newPanel(String id) {
 				return new ColumnLayout(id, panels, 2);

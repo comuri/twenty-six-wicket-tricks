@@ -14,25 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.panels.factories.panels;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
 
-import org.apache.wicket.markup.html.panel.Panel;
+public class IntegerFieldPanel extends AbstractTextFieldPanel {
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+	private static final long serialVersionUID = 2232889782978056661L;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
-
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	public IntegerFieldPanel(String id, IModel<String> label,
+			IModel<Integer> model) {
+		super(id, label);
+		add(new TextField<Integer>("component", model, Integer.class));
 	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
 }

@@ -14,25 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.panels.factories.panels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
+import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+public class DateFieldPanel extends AbstractTextFieldPanel {
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
+	private static final long serialVersionUID = 2232889782978056661L;
 
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	public DateFieldPanel(String id, IModel<String> label, IModel<Date> model) {
+		super(id, label);
+		add(new DateTextField("component", model).add(new DatePicker()));
 	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
 }

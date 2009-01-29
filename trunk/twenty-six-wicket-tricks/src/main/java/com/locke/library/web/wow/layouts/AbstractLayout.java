@@ -53,11 +53,11 @@ public abstract class AbstractLayout extends Panel {
 		}
 	};
 
-	public AbstractLayout(final String id, final IComponentSource<Panel> source) {
+	public AbstractLayout(final String id, final IPanelSource source) {
 		super(id);
 
 		// Add components from the component source
-		for (Panel panel : source.components(new IComponentIdentifierSource() {
+		for (Panel panel : source.panels(new IPanelIdentifierSource() {
 			public String nextId() {
 				return CHILD_ID;
 			}

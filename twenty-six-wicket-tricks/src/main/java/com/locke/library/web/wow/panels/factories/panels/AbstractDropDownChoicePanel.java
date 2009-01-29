@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.panels.factories.panels;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.wicket.model.IModel;
 
-import org.apache.wicket.markup.html.panel.Panel;
+public class AbstractDropDownChoicePanel extends AbstractFieldComponentPanel {
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+	private static final long serialVersionUID = -6590594319720834079L;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
-
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	public AbstractDropDownChoicePanel(String id, IModel<String> label) {
+		super(id, label);
 	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
 }

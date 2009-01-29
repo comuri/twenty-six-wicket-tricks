@@ -14,25 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.persistence.dao.query.clauses;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.locke.library.persistence.dao.query.Clause;
 
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
-
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
-
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
-	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+/**
+ * Clause for counting the number of matching items
+ * 
+ * @author Jonathan Locke
+ */
+public class Count extends Clause {
 }

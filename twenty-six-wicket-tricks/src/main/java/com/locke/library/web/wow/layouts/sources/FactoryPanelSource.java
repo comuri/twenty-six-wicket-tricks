@@ -21,23 +21,23 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
-import com.locke.library.web.wow.component.IComponentFactory;
-import com.locke.library.web.wow.component.IComponentFactorySource;
-import com.locke.library.web.wow.layouts.IComponentSource;
-import com.locke.library.web.wow.layouts.IComponentIdentifierSource;
+import com.locke.library.web.wow.layouts.IPanelSource;
+import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+import com.locke.library.web.wow.panels.IPanelFactory;
+import com.locke.library.web.wow.panels.IPanelFactorySource;
 
-public class FactoryPanelSource implements IComponentSource<Panel> {
+public class FactoryPanelSource implements IPanelSource {
 
-	private final IComponentFactorySource<Panel> factorySource;
+	private final IPanelFactorySource factorySource;
 
-	public FactoryPanelSource(IComponentFactorySource<Panel> factorySource) {
+	public FactoryPanelSource(IPanelFactorySource factorySource) {
 		this.factorySource = factorySource;
 	}
 
-	public List<Panel> components(IComponentIdentifierSource ids) {
+	public List<Panel> panels(IPanelIdentifierSource ids) {
 		final List<Panel> panels = new ArrayList<Panel>();
-		for (IComponentFactory<Panel, ?> factory : factorySource.factories()) {
-			panels.add(factory.newComponent(ids.nextId()));
+		for (IPanelFactory<?> factory : factorySource.factories()) {
+			panels.add(factory.newPanel(ids.nextId()));
 		}
 		return panels;
 	}

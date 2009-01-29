@@ -18,14 +18,14 @@ package com.locke.library.web.wow.layouts;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
-import com.locke.library.web.wow.component.IComponentFactory;
-import com.locke.library.web.wow.component.IComponentFactorySource;
+import com.locke.library.web.wow.panels.IPanelFactory;
+import com.locke.library.web.wow.panels.IPanelFactorySource;
 
 /**
  * A free-form layout allows a subclass to provide markup and define the precise
  * layout of the automatic components (as constructed from the
- * {@link IComponentFactorySource}). Each component in the layout is simply
- * given the {@link IComponentFactory#NAME} metadata value as its id.
+ * {@link IPanelFactorySource}). Each component in the layout is simply
+ * given the {@link IPanelFactory#NAME} metadata value as its id.
  * 
  * @author Jonathan Locke
  */
@@ -41,7 +41,7 @@ public class FreeFormLayout extends AbstractLayout {
 	 * @param source
 	 *            Source of component factories
 	 */
-	public FreeFormLayout(final String id, final IComponentSource<Panel> source) {
+	public FreeFormLayout(final String id, final IPanelSource source) {
 		super(id, source);
 		for (Panel panel : getPanels()) {
 			add(panel);

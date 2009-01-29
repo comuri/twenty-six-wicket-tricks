@@ -14,25 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.panels.factories;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+import com.locke.library.web.wow.panels.factories.panels.DropDownChoicePanel;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
+/**
+ * Panel factory
+ * 
+ * @author Jonathan Locke
+ */
+public abstract class DropDownChoiceFactory<T> extends
+		AbstractLabeledFormComponentFactory<T> {
 
-	private static final long serialVersionUID = -7194986087053264742L;
+	private static final long serialVersionUID = -4967380964319730316L;
 
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	/**
+	 * {@inheritDoc}
+	 */
+	public DropDownChoiceFactory(IModel<T> model) {
+		super(model);
 	}
 
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	/**
+	 * {@inheritDoc}
+	 */
+	public Panel newPanel(String id) {
+		return new DropDownChoicePanel(id, getLabelModel(), getModel(), getChoices());
+	}
+
+	/**
+	 * @return Choices for drop-downs created by this factory
+	 */
+	public abstract IModel<List<? extends T>> getChoices();
 }

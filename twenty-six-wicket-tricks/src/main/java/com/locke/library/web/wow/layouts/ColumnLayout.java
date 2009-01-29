@@ -42,7 +42,7 @@ public class ColumnLayout extends AbstractLayout {
 	 * @param columnCount
 	 *            Number of columns in the grid
 	 */
-	public ColumnLayout(final String id, final IComponentSource<Panel> panels,
+	public ColumnLayout(final String id, final IPanelSource panels,
 			final int columnCount) {
 		super(id, panels);
 

@@ -14,25 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.locke.library.web.wow.panels.factories;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+import com.locke.library.web.wow.panels.factories.panels.TextFieldPanel;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
+/**
+ * Panel factory
+ * 
+ * @author Jonathan Locke
+ */
+public class TextFieldFactory extends AbstractLabeledFormComponentFactory<String> {
 
-	private static final long serialVersionUID = -7194986087053264742L;
+	private static final long serialVersionUID = -2021448611077060882L;
 
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	/**
+	 * {@inheritDoc}
+	 */
+	public TextFieldFactory(IModel<String> model) {
+		super(model);
 	}
 
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	/**
+	 * {@inheritDoc}
+	 */
+	public Panel newPanel(String id) {
+		return new TextFieldPanel(id, getLabelModel(), getModel());
+	}
 }

@@ -14,25 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.persistence.dao.query.clauses;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.locke.library.persistence.dao.query.Clause;
 
-import org.apache.wicket.markup.html.panel.Panel;
+/**
+ * Clause for selecting a range of objects in the result
+ * 
+ * @author Jonathan Locke
+ */
+public class Range extends Clause {
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+	private static final long serialVersionUID = 592134343965489736L;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
+	private final long first;
+	private final long count;
 
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
+	public Range(long first, long count) {
+		this.first = first;
+		this.count = count;
 	}
 
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	public long getFirst() {
+		return first;
+	}
+
+	public long getCount() {
+		return count;
+	}
 }

@@ -14,25 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.persistence.dao.query.clauses;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.locke.library.persistence.dao.query.Clause;
 
-import org.apache.wicket.markup.html.panel.Panel;
+/**
+ * Base class for sort ordering clauses
+ * 
+ * @author Jonathan Locke
+ */
+public abstract class SortOrder extends Clause {
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+	private static final long serialVersionUID = 592134343965489736L;
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
+	/**
+	 * The field to sort on
+	 */
+	private final String field;
 
-	private static final long serialVersionUID = -7194986087053264742L;
+	/**
+	 * @param field
+	 *            Field to sort on
+	 */
+	public SortOrder(String field) {
+		this.field = field;
 
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
 	}
 
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	/**
+	 * @return Field to sort on
+	 */
+	public String getField() {
+		return field;
+	}
 }

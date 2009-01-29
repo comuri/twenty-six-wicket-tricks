@@ -14,25 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.panels.extractors.bean;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import com.locke.library.web.wow.panels.IPanelFactory;
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+/**
+ * Annotation for declaring component factories on bean getter methods
+ * 
+ * @author Jonathan Locke
+ */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PanelFactory {
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
-
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
-	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	Class<? extends IPanelFactory<?>> factory();
 }

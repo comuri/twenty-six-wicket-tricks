@@ -14,25 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.layouts.sources;
+package com.locke.library.web.wow.panels;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import com.locke.library.web.wow.layouts.ColumnLayout;
+import com.locke.library.web.wow.panels.extractors.bean.BeanExtractor;
 
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
+/**
+ * An arbitrary source of component factories.
+ * <p>
+ * An extractor such as {@link BeanExtractor} would implement this method to
+ * serve as a source of factories that construct components for each property of
+ * a bean.
+ * <p>
+ * A layout implementation like {@link ColumnLayout} can consume this interface
+ * and use the extracted factories to create components, decoupling it from any
+ * concrete source of components.
+ * 
+ * @author Jonathan Locke
+ */
+public interface IPanelFactorySource {
 
-public abstract class PanelList extends ArrayList<Panel> implements
-		IPanelSource {
-
-	private static final long serialVersionUID = -7194986087053264742L;
-
-	public List<Panel> panels(IPanelIdentifierSource ids) {
-		onInitialize(ids);
-		return this;
-	}
-
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	/**
+	 * @return A list of component factories
+	 */
+	List<IPanelFactory<?>> factories();
 }

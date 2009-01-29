@@ -14,22 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.tricks.b;
+package com.locke.library.persistence.dao.query;
 
-import org.apache.wicket.model.Model;
-
-import com.locke.Trick;
-import com.locke.library.web.wow.editors.bean.BeanEditor;
+import com.locke.library.persistence.dao.Dao;
+import com.locke.library.persistence.dao.query.clauses.Ascending;
+import com.locke.library.persistence.dao.query.clauses.Descending;
+import com.locke.library.persistence.dao.query.clauses.Match;
+import com.locke.library.persistence.dao.query.clauses.Range;
 
 /**
- * Trick 'B'
+ * Base class for abstracted (DAO implementation independent) query clauses.
+ * <p>
+ * The idea here is that {@link Dao} interfaces can accept a set of abstracted
+ * query clauses that can be translated into native queries by the DAO
+ * implementation.
+ * 
+ * @see Ascending
+ * @see Descending
+ * @see Match
+ * @see Range
  * 
  * @author Jonathan Locke
  */
-public class B extends Trick {
+public abstract class Clause {
 
-	public B() {
-		add(new BeanEditor<TestBean>("editor", new Model<TestBean>(
-				new TestBean())));
+	private static final long serialVersionUID = 592134343965489736L;
+
+	public Clause() {
 	}
 }

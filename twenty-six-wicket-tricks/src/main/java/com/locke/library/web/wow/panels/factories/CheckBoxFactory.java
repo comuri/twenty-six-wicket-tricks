@@ -19,14 +19,14 @@ package com.locke.library.web.wow.panels.factories;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.panels.factories.formcomponents.CheckBoxPanel;
+import com.locke.library.web.wow.panels.factories.editors.CheckBoxEditor;
 
 /**
  * Panel factory
  * 
  * @author Jonathan Locke
  */
-public class CheckBoxFactory extends AbstractLabeledFormComponentFactory<Boolean> {
+public class CheckBoxFactory extends AbstractLabeledEditorFactory<Boolean> {
 
 	private static final long serialVersionUID = 3236216946361792794L;
 
@@ -41,6 +41,6 @@ public class CheckBoxFactory extends AbstractLabeledFormComponentFactory<Boolean
 	 * {@inheritDoc}
 	 */
 	public Panel newPanel(String id) {
-		return new CheckBoxPanel(id, getLabelModel(), getModel());
+		return new CheckBoxEditor(id, getLabelModel(), getModel());
 	}
 }

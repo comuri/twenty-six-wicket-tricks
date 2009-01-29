@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.panels.factories.formcomponents;
+package com.locke.library.web.wow.panels.factories.editors;
 
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.IModel;
 
-public class AbstractTextFieldPanel extends AbstractFieldComponentPanel {
+public class CheckBoxEditor extends AbstractEditor {
 
 	private static final long serialVersionUID = -6590594319720834079L;
 
-	public AbstractTextFieldPanel(String id, IModel<String> label) {
+	public CheckBoxEditor(String id, IModel<String> label, IModel<Boolean> model) {
 		super(id, label);
+		add(new CheckBox("component", model));
 	}
 }

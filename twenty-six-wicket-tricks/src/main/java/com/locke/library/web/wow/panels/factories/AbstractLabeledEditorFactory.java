@@ -23,7 +23,7 @@ import org.apache.wicket.model.Model;
 import com.locke.library.utilities.metadata.MetaData;
 import com.locke.library.web.wow.panels.ILabeledPanelFactory;
 import com.locke.library.web.wow.panels.IPanelFactory;
-import com.locke.library.web.wow.panels.factories.labels.FormComponentLabel;
+import com.locke.library.web.wow.panels.factories.labels.EditorLabel;
 
 /**
  * Base implementation of {@link IPanelFactory}.
@@ -31,7 +31,7 @@ import com.locke.library.web.wow.panels.factories.labels.FormComponentLabel;
  * @see IPanelFactory
  * @author Jonathan Locke
  */
-public abstract class AbstractLabeledFormComponentFactory<T> implements ILabeledPanelFactory<T> {
+public abstract class AbstractLabeledEditorFactory<T> implements ILabeledPanelFactory<T> {
 
 	private static final long serialVersionUID = -6684693052212706516L;
 
@@ -51,7 +51,7 @@ public abstract class AbstractLabeledFormComponentFactory<T> implements ILabeled
 	 * @param model
 	 *            The model that this factory will assign to created components
 	 */
-	public AbstractLabeledFormComponentFactory(final IModel<T> model) {
+	public AbstractLabeledEditorFactory(final IModel<T> model) {
 		this.model = model;
 	}
 
@@ -85,6 +85,6 @@ public abstract class AbstractLabeledFormComponentFactory<T> implements ILabeled
 	 * {@inheritDoc}
 	 */
 	public Panel newLabel(String id) {
-		return new FormComponentLabel(id, getLabelModel());
+		return new EditorLabel(id, getLabelModel());
 	}
 }

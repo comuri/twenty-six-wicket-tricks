@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.panels.factories.formcomponents;
+package com.locke.library.web.wow.panels.factories.editors;
 
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
 
-public class DropDownChoicePanel extends AbstractDropDownChoicePanel {
+public class DropDownChoicePanel extends AbstractDropDownChoiceEditor {
 
 	private static final long serialVersionUID = 2232889782978056661L;
 

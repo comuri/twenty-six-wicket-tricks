@@ -19,14 +19,14 @@ package com.locke.library.web.wow.panels.factories;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.panels.factories.formcomponents.IntegerFieldPanel;
+import com.locke.library.web.wow.panels.factories.editors.IntegerFieldPanel;
 
 /**
  * Panel factory
  * 
  * @author Jonathan Locke
  */
-public class IntegerFieldFactory extends AbstractLabeledFormComponentFactory<Integer> {
+public class IntegerFieldFactory extends AbstractLabeledEditorFactory<Integer> {
 
 	private static final long serialVersionUID = -9162894115066633612L;
 

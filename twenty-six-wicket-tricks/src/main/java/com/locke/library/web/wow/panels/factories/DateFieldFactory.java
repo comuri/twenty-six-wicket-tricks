@@ -21,14 +21,14 @@ import java.util.Date;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.panels.factories.formcomponents.DateFieldPanel;
+import com.locke.library.web.wow.panels.factories.editors.DateFieldEditor;
 
 /**
  * Panel factory
  * 
  * @author Jonathan Locke
  */
-public class DateFieldFactory extends AbstractLabeledFormComponentFactory<Date> {
+public class DateFieldFactory extends AbstractLabeledEditorFactory<Date> {
 
 	private static final long serialVersionUID = -5539198342882441681L;
 
@@ -43,6 +43,6 @@ public class DateFieldFactory extends AbstractLabeledFormComponentFactory<Date> 
 	 * {@inheritDoc}
 	 */
 	public Panel newPanel(String id) {
-		return new DateFieldPanel(id, getLabelModel(), getModel());
+		return new DateFieldEditor(id, getLabelModel(), getModel());
 	}
 }

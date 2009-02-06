@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.persistence.dao.hibernate;
+package com.locke.library.persistence.dao.jpa;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.apache.wicket.util.lang.Classes;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import com.locke.library.persistence.Persistent;
 import com.locke.library.persistence.dao.query.Clause;
@@ -35,18 +35,18 @@ import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.persistence.dao.query.clauses.Range;
 
 /**
- * Base class for Hibernate DAO implementations
+ * Base class for JPA DAO implementations
  * 
  * @author Jonathan Locke
  * 
  * @param <T>
  */
-public abstract class AbstractHibernateDao<T extends Persistent> {
-
+public abstract class AbstractJpaDao<T extends Persistent>
+{
 	/**
-	 * Hibernate session factory injected by Spring
+	 * JPA entity manager injected by Spring
 	 */
-	private SessionFactory factory;
+	private EntityManager entityManager;
 
 	/**
 	 * Class of object managed by this DAO
@@ -57,7 +57,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 	 * @param type
 	 *            Type of object managed by this DAO
 	 */
-	public AbstractHibernateDao(final Class<T> type) {
+	public AbstractJpaDao(final Class<T> type)
+	{
 		this.type = type;
 	}
 
@@ -67,7 +68,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 	 *            given, all objects will match.
 	 * @return The number of objects that matched the given clauses
 	 */
-	public long count(Clause... clauses) {
+	public long count(Clause... clauses)
+	{
 
 		// Add count clause before clauses passed in
 		List<Clause> newClauses = new ArrayList<Clause>();
@@ -78,8 +80,9 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 		final Query query = buildQuery(newClauses);
 
 		// Result of query should be a count
-		Long count = (Long) query.uniqueResult();
-		if (count == null) {
+		Long count = (Long) query.getSingleResult();
+		if (count == null)
+		{
 			return 0;
 		}
 		return count;
@@ -89,23 +92,26 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 	 * @param object
 	 *            Object to create in storage
 	 */
-	public void create(T object) {
-		getSession().saveOrUpdate(object);
+	public void create(T object)
+	{
+		entityManager.persist(object);
 	}
 
 	/**
 	 * @param object
 	 *            Object to delete from storage
 	 */
-	public void delete(T object) {
-		getSession().delete(object);
+	public void delete(T object)
+	{
+		entityManager.remove(object);
 	}
 
 	/**
 	 * Delete all objects of this type
 	 */
-	public void deleteAll() {
-		getSession().createQuery("delete from " + getName()).executeUpdate();
+	public void deleteAll()
+	{
+		entityManager.createQuery("delete from " + getName()).executeUpdate();
 	}
 
 	/**
@@ -115,8 +121,9 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 	 * @return The objects that matched the given clauses
 	 */
 	@SuppressWarnings("unchecked")
-	public List<T> find(Clause... clauses) {
-		return (List<T>) buildQuery(Arrays.asList(clauses)).list();
+	public List<T> find(Clause... clauses)
+	{
+		return (List<T>) buildQuery(Arrays.asList(clauses)).getResultList();
 	}
 
 	/**
@@ -124,47 +131,43 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 	 *            Id of object to read
 	 * @return The loaded object
 	 */
-	@SuppressWarnings("unchecked")
-	public T read(Serializable id) {
-		return (T) getSession().load(type, id);
+	public T read(Serializable id)
+	{
+		return (T) entityManager.find(type, id);
 	}
 
 	/**
-	 * Spring will use this setter to inject a session factory.
+	 * Spring will use this setter to inject a JPA Entity manager.
 	 * 
-	 * @param factory
-	 *            Hibernate session factory from Spring
+	 * @param entityManager
+	 *            Entity manager from Spring
 	 */
-	public void setSessionFactory(SessionFactory factory) {
-		this.factory = factory;
+	public void setEntityManager(EntityManager entityManager)
+	{
+		this.entityManager = entityManager;
 	}
 
 	/**
 	 * @param object
 	 *            The object to update
 	 */
-	public void update(T object) {
-		getSession().saveOrUpdate(object);
+	public void update(T object)
+	{
+		entityManager.persist(object);
 	}
 
 	/**
 	 * @param clauses
-	 *            The list of abstract clauses to build a Hibernate query for
-	 * @return The Hibernate query for the given clauses
+	 *            The list of abstract clauses to build a query for
+	 * @return The query for the given clauses
 	 */
 	protected abstract Query buildQuery(List<Clause> clauses);
 
 	/**
-	 * @return Current Hibernate session
-	 */
-	protected Session getSession() {
-		return factory.getCurrentSession();
-	}
-
-	/**
 	 * @return The name of this DAO
 	 */
-	private String getName() {
+	private String getName()
+	{
 		return Classes.simpleName(type);
 	}
 
@@ -173,7 +176,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 	 * 
 	 * @author Jonathan
 	 */
-	public abstract class AbstractHibernateQueryBuilder {
+	public abstract class AbstractJpaQueryBuilder
+	{
 
 		/**
 		 * Abstracted clauses we're building a query for
@@ -181,27 +185,30 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 		private final List<Clause> clauses;
 
 		/**
-		 * Hibernate "HQL" query string
+		 * "EJBQL" query string
 		 */
-		private StringBuilder hql = new StringBuilder();
+		private StringBuilder ejbql = new StringBuilder();
 
 		/**
 		 * @param clauses
 		 *            Clauses
 		 */
-		public AbstractHibernateQueryBuilder(List<Clause> clauses) {
+		public AbstractJpaQueryBuilder(List<Clause> clauses)
+		{
 			this.clauses = clauses;
 		}
 
 		/**
-		 * @return Hibernate query
+		 * @return Query
 		 */
 		@SuppressWarnings("unchecked")
-		public Query build() {
+		public Query build()
+		{
 
 			// Count clause included?
 			Count count = getClause(Count.class);
-			if (count != null) {
+			if (count != null)
+			{
 				append("select count(*) ");
 			}
 
@@ -210,8 +217,10 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 
 			// Add match constraints
 			Match<T> match = getClause(Match.class);
-			if (match != null) {
-				if (!match.getObject().getClass().isAssignableFrom(type)) {
+			if (match != null)
+			{
+				if (!match.getObject().getClass().isAssignableFrom(type))
+				{
 					throw new IllegalArgumentException("Invalid match clause");
 				}
 				onMatch(match);
@@ -219,20 +228,23 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 
 			// Add sort ordering clauses
 			Ascending ascending = getClause(Ascending.class);
-			if (ascending != null) {
+			if (ascending != null)
+			{
 				onAscending(ascending);
 			}
 			Descending descending = getClause(Descending.class);
-			if (descending != null) {
+			if (descending != null)
+			{
 				onDescending(descending);
 			}
 
 			// Create query
-			Query query = getSession().createQuery(hql.toString());
+			Query query = entityManager.createQuery(ejbql.toString());
 
 			// Set range on query
 			Range range = getClause(Range.class);
-			if (range != null) {
+			if (range != null)
+			{
 				query.setFirstResult((int) range.getFirst());
 				query.setMaxResults((int) range.getCount());
 			}
@@ -245,14 +257,17 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 		 * @param value
 		 *            Value it should be
 		 */
-		protected void addMatchConstraint(String name, Object value) {
-			if (value != null) {
+		protected void addMatchConstraint(String name, Object value)
+		{
+			if (value != null)
+			{
 				append("and upper(target." + name + ") like ('" + value + "')");
 			}
 		}
 
-		protected void append(String string) {
-			hql.append(string);
+		protected void append(String string)
+		{
+			ejbql.append(string);
 		}
 
 		/**
@@ -261,7 +276,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 		 * @param ascending
 		 *            Order by clause
 		 */
-		protected void onAscending(Ascending ascending) {
+		protected void onAscending(Ascending ascending)
+		{
 			append("order by (target." + ascending.getField() + ") asc");
 		}
 
@@ -271,7 +287,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 		 * @param descending
 		 *            Order by clause
 		 */
-		protected void onDescending(Descending descending) {
+		protected void onDescending(Descending descending)
+		{
 			append("order by (target." + descending.getField() + ") desc");
 		}
 
@@ -294,9 +311,12 @@ public abstract class AbstractHibernateDao<T extends Persistent> {
 		 * @return The clause
 		 */
 		@SuppressWarnings("unchecked")
-		private <C extends Clause> C getClause(Class<C> type) {
-			for (Clause clause : clauses) {
-				if (clause.getClass().equals(type)) {
+		private <C extends Clause> C getClause(Class<C> type)
+		{
+			for (Clause clause : clauses)
+			{
+				if (clause.getClass().equals(type))
+				{
 					return (C) clause;
 				}
 			}

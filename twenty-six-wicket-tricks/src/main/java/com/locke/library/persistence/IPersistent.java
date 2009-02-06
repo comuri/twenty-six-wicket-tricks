@@ -16,21 +16,15 @@
  */
 package com.locke.library.persistence;
 
-import java.io.Serializable;
-
-import org.apache.wicket.model.IDetachable;
-
 /**
- * A persistent object has a {@link Serializable} identifier
+ * A persistent object has a {@link IPrimaryKey} identifier
  * 
  * @author Jonathan Locke
  */
-public interface IPersistent<PK extends Serializable> {
-
+public interface IPersistent<PK extends IPrimaryKey>
+{
 	/**
-	 * @return An id can be any object, but it must be a {@link Serializable}
-	 *         object so the id can be stored in the session when using
-	 *         {@link IDetachable} models.
+	 * @return An id can be any object implementing PrimaryKey
 	 */
 	public PK getId();
 }

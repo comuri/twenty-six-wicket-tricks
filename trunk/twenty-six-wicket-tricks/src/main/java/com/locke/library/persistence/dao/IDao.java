@@ -32,8 +32,8 @@ import com.locke.library.persistence.dao.query.Clause;
  * 
  * @param <T>
  */
-public interface IDao<T extends IPersistent> {
-
+public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
+{
 	/**
 	 * CREATE object
 	 * 
@@ -49,7 +49,7 @@ public interface IDao<T extends IPersistent> {
 	 *            Persistent id
 	 * @return Loaded object
 	 */
-	T read(Serializable id);
+	T read(PK id);
 
 	/**
 	 * UPDATE object
@@ -66,7 +66,7 @@ public interface IDao<T extends IPersistent> {
 	 *            Object to delete
 	 */
 	void delete(T object);
-	
+
 	/**
 	 * DELETE all objects of this type
 	 */

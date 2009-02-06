@@ -25,12 +25,12 @@ import org.apache.wicket.model.IDetachable;
  * 
  * @author Jonathan Locke
  */
-public interface IPersistent {
+public interface IPersistent<PK extends Serializable> {
 
 	/**
 	 * @return An id can be any object, but it must be a {@link Serializable}
 	 *         object so the id can be stored in the session when using
 	 *         {@link IDetachable} models.
 	 */
-	public Serializable getId();
+	public PK getId();
 }

@@ -21,8 +21,8 @@ import java.io.Serializable;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.persistence.Persistent;
-import com.locke.library.persistence.dao.Dao;
+import com.locke.library.persistence.IPersistent;
+import com.locke.library.persistence.dao.IDao;
 
 /**
  * Base class for persistent models. Holds the object's class and either an id
@@ -34,7 +34,7 @@ import com.locke.library.persistence.dao.Dao;
  * 
  * @param <T>
  */
-public abstract class AbstractDaoModel<T extends Persistent> implements
+public abstract class AbstractDaoModel<T extends IPersistent> implements
 		IModel<T> {
 
 	private static final long serialVersionUID = -5196138177877713403L;
@@ -146,5 +146,5 @@ public abstract class AbstractDaoModel<T extends Persistent> implements
 	/**
 	 * @return The DAO for this model
 	 */
-	protected abstract Dao<T> getDao();
+	protected abstract IDao<T> getDao();
 }

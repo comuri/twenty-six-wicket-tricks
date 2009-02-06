@@ -26,7 +26,7 @@ import javax.persistence.Query;
 
 import org.apache.wicket.util.lang.Classes;
 
-import com.locke.library.persistence.Persistent;
+import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Count;
@@ -41,7 +41,7 @@ import com.locke.library.persistence.dao.query.clauses.Range;
  * 
  * @param <T>
  */
-public abstract class AbstractJpaDao<T extends Persistent>
+public abstract class AbstractJpaDao<T extends IPersistent>
 {
 	/**
 	 * JPA entity manager injected by Spring

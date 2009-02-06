@@ -19,12 +19,12 @@ package com.locke.library.persistence.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.locke.library.persistence.Persistent;
+import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.query.Clause;
 
 /**
  * Interface to CRUD (Create, Read, Update, Delete) functionality which persists
- * objects that are {@link Persistent} as well as find and count functionality
+ * objects that are {@link IPersistent} as well as find and count functionality
  * which permits (abstracted) queries using {@link Clause}s which filter, sort
  * and limit results.
  * 
@@ -32,7 +32,7 @@ import com.locke.library.persistence.dao.query.Clause;
  * 
  * @param <T>
  */
-public interface Dao<T extends Persistent> {
+public interface IDao<T extends IPersistent> {
 
 	/**
 	 * CREATE object

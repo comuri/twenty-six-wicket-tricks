@@ -16,7 +16,7 @@
  */
 package com.locke.library.persistence.dao.query.clauses;
 
-import com.locke.library.persistence.Persistent;
+import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.query.Clause;
 
 /**
@@ -24,7 +24,7 @@ import com.locke.library.persistence.dao.query.Clause;
  * 
  * @author Jonathan Locke
  */
-public class Match<T extends Persistent> extends Clause {
+public class Match<T extends IPersistent> extends Clause {
 
 	/**
 	 * The example object

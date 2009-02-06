@@ -25,7 +25,7 @@ import org.apache.wicket.model.IDetachable;
  * 
  * @author Jonathan Locke
  */
-public interface Persistent {
+public interface IPersistent {
 
 	/**
 	 * @return An id can be any object, but it must be a {@link Serializable}

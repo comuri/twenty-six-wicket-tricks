@@ -16,12 +16,11 @@
  */
 package com.locke.library.web.models;
 
-import java.io.Serializable;
-
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
 
 import com.locke.library.persistence.IPersistent;
+import com.locke.library.persistence.IPrimaryKey;
 import com.locke.library.persistence.dao.IDao;
 
 /**
@@ -34,7 +33,7 @@ import com.locke.library.persistence.dao.IDao;
  * 
  * @param <T>
  */
-public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends Serializable>
+public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPrimaryKey>
 		implements IModel<T>
 {
 

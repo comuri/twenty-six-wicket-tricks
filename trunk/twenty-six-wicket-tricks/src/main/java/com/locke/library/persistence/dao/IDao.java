@@ -16,10 +16,10 @@
  */
 package com.locke.library.persistence.dao;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.locke.library.persistence.IPersistent;
+import com.locke.library.persistence.IPrimaryKey;
 import com.locke.library.persistence.dao.query.Clause;
 
 /**
@@ -32,7 +32,7 @@ import com.locke.library.persistence.dao.query.Clause;
  * 
  * @param <T>
  */
-public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
+public interface IDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
 {
 	/**
 	 * CREATE object

@@ -41,7 +41,7 @@ import com.locke.library.persistence.dao.query.clauses.Range;
  * 
  * @param <T>
  */
-public abstract class AbstractJpaDao<T extends IPersistent>
+public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Serializable>
 {
 	/**
 	 * JPA entity manager injected by Spring
@@ -131,7 +131,7 @@ public abstract class AbstractJpaDao<T extends IPersistent>
 	 *            Id of object to read
 	 * @return The loaded object
 	 */
-	public T read(Serializable id)
+	public T read(PK id)
 	{
 		return (T) entityManager.find(type, id);
 	}

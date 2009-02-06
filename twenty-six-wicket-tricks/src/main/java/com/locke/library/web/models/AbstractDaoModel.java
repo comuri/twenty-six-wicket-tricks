@@ -34,15 +34,16 @@ import com.locke.library.persistence.dao.IDao;
  * 
  * @param <T>
  */
-public abstract class AbstractDaoModel<T extends IPersistent> implements
-		IModel<T> {
+public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends Serializable>
+		implements IModel<T>
+{
 
 	private static final long serialVersionUID = -5196138177877713403L;
 
 	/**
 	 * Id of persistent object if it's been persisted
 	 */
-	private Serializable id;
+	private PK id;
 
 	/**
 	 * Reference to persistent object (if loaded during this request cycle and
@@ -54,7 +55,8 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	 * @param id
 	 *            Object id
 	 */
-	public AbstractDaoModel(Serializable id) {
+	public AbstractDaoModel(PK id)
+	{
 		this.id = id;
 		InjectorHolder.getInjector().inject(this);
 	}
@@ -63,7 +65,8 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	 * @param object
 	 *            The object
 	 */
-	public AbstractDaoModel(T object) {
+	public AbstractDaoModel(T object)
+	{
 		this.id = object.getId();
 		this.object = object;
 		InjectorHolder.getInjector().inject(this);
@@ -73,7 +76,8 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	 * @param model
 	 *            Model to copy
 	 */
-	public AbstractDaoModel(IModel<T> model) {
+	public AbstractDaoModel(IModel<T> model)
+	{
 		// NOTE: We cannot use AbstractDaoModel(T) here because the model object
 		// may not have been fully navigated yet if the DAO is lazy-loading
 		// fields (which might leave some fields null)
@@ -83,20 +87,24 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	/**
 	 * Delete object using DAO
 	 */
-	public void delete() {
+	public void delete()
+	{
 		getDao().delete(getObject());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void detach() {
+	public void detach()
+	{
 
 		// If there is an entity
-		if (object != null) {
+		if (object != null)
+		{
 
 			// and it has a persistent id assigned
-			if (object.getId() != null) {
+			if (object.getId() != null)
+			{
 
 				// save the id and null out the entity
 				id = object.getId();
@@ -108,13 +116,16 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public T getObject() {
+	public T getObject()
+	{
 
 		// If the entity isn't loaded
-		if (object == null) {
+		if (object == null)
+		{
 
 			// but there is an id
-			if (id != null) {
+			if (id != null)
+			{
 
 				// ask DAO to load it
 				object = getDao().read(id);
@@ -126,11 +137,14 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	/**
 	 * Create or Update this persistent model
 	 */
-	public void save() {
+	public void save()
+	{
 		T object = getObject();
-		if (object.getId() == null) {
+		if (object.getId() == null)
+		{
 			getDao().create(object);
-		} else {
+		} else
+		{
 			getDao().update(object);
 		}
 	}
@@ -138,7 +152,8 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setObject(T object) {
+	public void setObject(T object)
+	{
 		throw new UnsupportedOperationException(getClass()
 				+ " does not support setObject(T object)");
 	}
@@ -146,5 +161,5 @@ public abstract class AbstractDaoModel<T extends IPersistent> implements
 	/**
 	 * @return The DAO for this model
 	 */
-	protected abstract IDao<T> getDao();
+	protected abstract IDao<T, PK> getDao();
 }

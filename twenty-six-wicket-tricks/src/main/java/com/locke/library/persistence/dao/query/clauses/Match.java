@@ -24,8 +24,8 @@ import com.locke.library.persistence.dao.query.Clause;
  * 
  * @author Jonathan Locke
  */
-public class Match<T extends IPersistent> extends Clause {
-
+public class Match<T extends IPersistent<?>> extends Clause
+{
 	/**
 	 * The example object
 	 */
@@ -35,14 +35,16 @@ public class Match<T extends IPersistent> extends Clause {
 	 * @param object
 	 *            The object with properties that must match
 	 */
-	public Match(T object) {
+	public Match(T object)
+	{
 		this.object = object;
 	}
 
 	/**
 	 * @return The object with properties that must match
 	 */
-	public T getObject() {
+	public T getObject()
+	{
 		return object;
 	}
 }

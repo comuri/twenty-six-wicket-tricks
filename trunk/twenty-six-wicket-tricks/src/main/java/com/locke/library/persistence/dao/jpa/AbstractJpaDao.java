@@ -16,6 +16,11 @@
  */
 package com.locke.library.persistence.dao.jpa;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +75,6 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	 */
 	public long count(Clause... clauses)
 	{
-
 		// Add count clause before clauses passed in
 		List<Clause> newClauses = new ArrayList<Clause>();
 		newClauses.add(new Count());
@@ -161,7 +165,10 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	 *            The list of abstract clauses to build a query for
 	 * @return The query for the given clauses
 	 */
-	protected abstract Query buildQuery(List<Clause> clauses);
+	protected Query buildQuery(List<Clause> clauses)
+	{
+		return new AbstractJpaQueryBuilder(clauses).build();
+	}
 
 	/**
 	 * @return The name of this DAO
@@ -176,9 +183,8 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	 * 
 	 * @author Jonathan
 	 */
-	public abstract class AbstractJpaQueryBuilder
+	public class AbstractJpaQueryBuilder
 	{
-
 		/**
 		 * Abstracted clauses we're building a query for
 		 */
@@ -293,13 +299,46 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 		}
 
 		/**
-		 * Adds HQL clauses for all fields of the match object that are
+		 * Adds match constraints for all fields of the match object that are
 		 * populated with non-null values
 		 * 
 		 * @param match
 		 *            The object to match by example
 		 */
-		protected abstract void onMatch(Match<T> match);
+		protected void onMatch(Match<T> match)
+		{
+			T object = match.getObject();
+			try
+			{
+				// Get properties
+				final BeanInfo info = Introspector.getBeanInfo(object
+						.getClass());
+
+				// Go through properties
+				for (PropertyDescriptor property : info
+						.getPropertyDescriptors())
+				{
+					addMatchConstraint(property.getName(), property
+							.getReadMethod().invoke(object));
+				}
+			}
+			catch (IntrospectionException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IllegalArgumentException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				e.printStackTrace();
+			}
+		}
 
 		/**
 		 * Finds a given clause by type if it was passed in to the constructor

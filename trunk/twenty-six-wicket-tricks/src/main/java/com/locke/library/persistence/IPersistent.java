@@ -24,7 +24,7 @@ package com.locke.library.persistence;
 public interface IPersistent<PK extends IPrimaryKey>
 {
 	/**
-	 * @return An id can be any object implementing PrimaryKey
+	 * @return Primary key value for this persistent object
 	 */
-	public PK getId();
+	public PK getPrimaryKey();
 }

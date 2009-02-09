@@ -66,7 +66,7 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 	 */
 	public AbstractDaoModel(T object)
 	{
-		this.id = object.getId();
+		this.id = object.getPrimaryKey();
 		this.object = object;
 		InjectorHolder.getInjector().inject(this);
 	}
@@ -80,7 +80,7 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 		// NOTE: We cannot use AbstractDaoModel(T) here because the model object
 		// may not have been fully navigated yet if the DAO is lazy-loading
 		// fields (which might leave some fields null)
-		this(model.getObject().getId());
+		this(model.getObject().getPrimaryKey());
 	}
 
 	/**
@@ -102,11 +102,11 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 		{
 
 			// and it has a persistent id assigned
-			if (object.getId() != null)
+			if (object.getPrimaryKey() != null)
 			{
 
 				// save the id and null out the entity
-				id = object.getId();
+				id = object.getPrimaryKey();
 				object = null;
 			}
 		}
@@ -139,7 +139,7 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 	public void save()
 	{
 		T object = getObject();
-		if (object.getId() == null)
+		if (object.getPrimaryKey() == null)
 		{
 			getDao().create(object);
 		} else

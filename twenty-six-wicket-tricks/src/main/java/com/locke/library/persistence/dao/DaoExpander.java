@@ -3,15 +3,14 @@ package com.locke.library.persistence.dao;
 import java.util.List;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.IPrimaryKey;
 import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.clauses.Match;
 
-public class DaoExpander<T extends IPersistent<PK>, PK extends IPrimaryKey>
+public class DaoExpander<T extends IPersistent<?>>
 {
-	private final IDao<T, PK> dao;
+	private final IDao<T, ?> dao;
 
-	public DaoExpander(IDao<T, PK> dao)
+	public DaoExpander(IDao<T, ?> dao)
 	{
 		this.dao = dao;
 	}

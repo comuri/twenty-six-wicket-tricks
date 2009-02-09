@@ -38,6 +38,7 @@ import com.locke.library.persistence.dao.query.clauses.Count;
 import com.locke.library.persistence.dao.query.clauses.Descending;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.persistence.dao.query.clauses.Range;
+import com.locke.library.persistence.dao.query.clauses.Where;
 
 /**
  * Base class for JPA DAO implementations
@@ -232,6 +233,18 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 				onMatch(match);
 			}
 
+			// Add where constraints if no match clause
+			Where where = getClause(Where.class);
+			if (where != null)
+			{
+				if (match != null)
+				{
+					throw new IllegalStateException(
+							"Cannot use match and where clauses together");
+				}
+				append("and (" + where + ")");
+			}
+
 			// Add sort ordering clauses
 			Ascending ascending = getClause(Ascending.class);
 			if (ascending != null)
@@ -265,10 +278,13 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 		 */
 		protected void addMatchConstraint(String name, Object value)
 		{
-			if (value != null)
+			if (value instanceof String)
 			{
 				append("and upper(target." + name + ") like ('" + value + "')");
 			}
+			throw new UnsupportedOperationException(
+					"Cannot add match constraint for value of class "
+							+ value.getClass());
 		}
 
 		protected void append(String string)

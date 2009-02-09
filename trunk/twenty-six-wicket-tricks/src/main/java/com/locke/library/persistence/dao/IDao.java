@@ -68,6 +68,14 @@ public interface IDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
 	void delete(T object);
 
 	/**
+	 * DELETE objects matching clauses
+	 * 
+	 * @param clauses
+	 *            The clauses
+	 */
+	void delete(Clause... clauses);
+
+	/**
 	 * DELETE all objects of this type
 	 */
 	void deleteAll();

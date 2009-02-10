@@ -60,126 +60,6 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	private final Class<T> type;
 
 	/**
-	 * @param type
-	 *            Type of object managed by this DAO
-	 */
-	public AbstractJpaDao(final Class<T> type)
-	{
-		this.type = type;
-	}
-
-	/**
-	 * @param clauses
-	 *            Zero or more clauses for locating matches. If no clauses are
-	 *            given, all objects will match.
-	 * @return The number of objects that matched the given clauses
-	 */
-	public long count(Clause... clauses)
-	{
-		// Add count clause before clauses passed in
-		List<Clause> newClauses = new ArrayList<Clause>();
-		newClauses.add(new Count());
-		newClauses.addAll(Arrays.asList(clauses));
-
-		// Build query
-		final Query query = buildQuery(newClauses);
-
-		// Result of query should be a count
-		Long count = (Long) query.getSingleResult();
-		if (count == null)
-		{
-			return 0;
-		}
-		return count;
-	}
-
-	/**
-	 * @param object
-	 *            Object to create in storage
-	 */
-	public void create(T object)
-	{
-		entityManager.persist(object);
-	}
-
-	/**
-	 * @param object
-	 *            Object to delete from storage
-	 */
-	public void delete(T object)
-	{
-		entityManager.remove(object);
-	}
-
-	/**
-	 * Delete all objects of this type
-	 */
-	public void deleteAll()
-	{
-		entityManager.createQuery("delete from " + getName()).executeUpdate();
-	}
-
-	/**
-	 * @param clauses
-	 *            Zero or more clauses for locating matches. If no clauses are
-	 *            given, all objects will match.
-	 * @return The objects that matched the given clauses
-	 */
-	@SuppressWarnings("unchecked")
-	public List<T> find(Clause... clauses)
-	{
-		return (List<T>) buildQuery(Arrays.asList(clauses)).getResultList();
-	}
-
-	/**
-	 * @param id
-	 *            Id of object to read
-	 * @return The loaded object
-	 */
-	public T read(PK id)
-	{
-		return (T) entityManager.find(type, id);
-	}
-
-	/**
-	 * Spring will use this setter to inject a JPA Entity manager.
-	 * 
-	 * @param entityManager
-	 *            Entity manager from Spring
-	 */
-	public void setEntityManager(EntityManager entityManager)
-	{
-		this.entityManager = entityManager;
-	}
-
-	/**
-	 * @param object
-	 *            The object to update
-	 */
-	public void update(T object)
-	{
-		entityManager.persist(object);
-	}
-
-	/**
-	 * @param clauses
-	 *            The list of abstract clauses to build a query for
-	 * @return The query for the given clauses
-	 */
-	protected Query buildQuery(List<Clause> clauses)
-	{
-		return new AbstractJpaQueryBuilder(clauses).build();
-	}
-
-	/**
-	 * @return The name of this DAO
-	 */
-	private String getName()
-	{
-		return Classes.simpleName(type);
-	}
-
-	/**
 	 * Query builder for use in subclasses in implementing buildQuery().
 	 * 
 	 * @author Jonathan
@@ -211,7 +91,6 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 		@SuppressWarnings("unchecked")
 		public Query build()
 		{
-
 			// Count clause included?
 			Count count = getClause(Count.class);
 			if (count != null)
@@ -377,5 +256,133 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 			}
 			return null;
 		}
+	}
+
+	/**
+	 * @param type
+	 *            Type of object managed by this DAO
+	 */
+	public AbstractJpaDao(final Class<T> type)
+	{
+		this.type = type;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long count(Clause... clauses)
+	{
+		// Add count clause before clauses passed in
+		List<Clause> newClauses = new ArrayList<Clause>();
+		newClauses.add(new Count());
+		newClauses.addAll(Arrays.asList(clauses));
+
+		// Build query
+		final Query query = buildQuery(newClauses);
+
+		// Result of query should be a count
+		Long count = (Long) query.getSingleResult();
+		if (count == null)
+		{
+			return 0;
+		}
+		return count;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void create(T object)
+	{
+		entityManager.persist(object);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void delete(T object)
+	{
+		entityManager.remove(object);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public List<T> find(Clause... clauses)
+	{
+		return (List<T>) buildQuery(Arrays.asList(clauses)).getResultList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public T findFirst(Clause... clauses)
+	{
+		List<T> found = find(clauses);
+		if (found != null && found.size() > 0)
+		{
+			return found.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public T findOrCreate(T object)
+	{
+		T found = findFirst(new Match<T>(object));
+		if (found != null)
+		{
+			return found;
+		}
+		create(object);
+		return object;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public T read(PK id)
+	{
+		return (T) entityManager.find(type, id);
+	}
+
+	/**
+	 * Spring will use this setter to inject a JPA Entity manager.
+	 * 
+	 * @param entityManager
+	 *            Entity manager from Spring
+	 */
+	public void setEntityManager(EntityManager entityManager)
+	{
+		this.entityManager = entityManager;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void update(T object)
+	{
+		entityManager.persist(object);
+	}
+
+	/**
+	 * @param clauses
+	 *            The list of abstract clauses to build a query for
+	 * @return The query for the given clauses
+	 */
+	protected Query buildQuery(List<Clause> clauses)
+	{
+		return new AbstractJpaQueryBuilder(clauses).build();
+	}
+
+	/**
+	 * @return The name of this DAO
+	 */
+	private String getName()
+	{
+		return Classes.simpleName(type);
 	}
 }

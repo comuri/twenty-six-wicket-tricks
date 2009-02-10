@@ -16,10 +16,9 @@
  */
 package com.locke.library.persistence.dao;
 
-import java.util.List;
-
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.IPrimaryKey;
+import com.locke.library.persistence.dao.query.AbstractDaoQuery;
 import com.locke.library.persistence.dao.query.Clause;
 
 /**
@@ -35,42 +34,12 @@ import com.locke.library.persistence.dao.query.Clause;
 public interface IDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
 {
 	/**
-	 * @param clauses
-	 *            Clauses to use in query
-	 * @return First matching object
-	 */
-	public T findFirst(Clause... clauses);
-
-	/**
-	 * @param object
-	 *            Object to find in database or create
-	 * @return The found object, or the argument (attached to session) if
-	 *         created
-	 */
-	public T findOrCreate(T object);
-
-	/**
-	 * @param clauses
-	 *            Clauses to use in query
-	 * @return Number of objects matching the example object
-	 */
-	long count(Clause... clauses);
-
-	/**
 	 * CREATE object
 	 * 
 	 * @param object
 	 *            Object to create
 	 */
 	void create(T object);
-
-	/**
-	 * DELETE objects matching clauses
-	 * 
-	 * @param clauses
-	 *            The clauses
-	 */
-	void delete(Clause... clauses);
 
 	/**
 	 * DELETE object
@@ -81,11 +50,19 @@ public interface IDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
 	void delete(T object);
 
 	/**
-	 * @param clauses
-	 *            Clauses to use in query
-	 * @return All matching objects
+	 * @param object
+	 *            Object to find in database or create
+	 * @return The found object, or the argument (attached to session) if
+	 *         created
 	 */
-	List<T> find(Clause... clauses);
+	T ensure(T object);
+
+	/**
+	 * @param clauses
+	 *            Abstract clauses to form query from
+	 * @return Query object
+	 */
+	<C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses);
 
 	/**
 	 * READ from data source

@@ -16,29 +16,16 @@
  */
 package com.locke.library.persistence.dao.jpa;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.apache.wicket.util.lang.Classes;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.IPrimaryKey;
+import com.locke.library.persistence.dao.IDao;
+import com.locke.library.persistence.dao.query.AbstractDaoQuery;
 import com.locke.library.persistence.dao.query.Clause;
-import com.locke.library.persistence.dao.query.clauses.Ascending;
-import com.locke.library.persistence.dao.query.clauses.Count;
-import com.locke.library.persistence.dao.query.clauses.Descending;
 import com.locke.library.persistence.dao.query.clauses.Match;
-import com.locke.library.persistence.dao.query.clauses.Range;
-import com.locke.library.persistence.dao.query.clauses.Where;
 
 /**
  * Base class for JPA DAO implementations
@@ -48,215 +35,17 @@ import com.locke.library.persistence.dao.query.clauses.Where;
  * @param <T>
  */
 public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
+		implements IDao<T, PK>
 {
 	/**
 	 * JPA entity manager injected by Spring
 	 */
-	private EntityManager entityManager;
+	EntityManager entityManager;
 
 	/**
 	 * Class of object managed by this DAO
 	 */
-	private final Class<T> type;
-
-	/**
-	 * Query builder for use in subclasses in implementing buildQuery().
-	 * 
-	 * @author Jonathan
-	 */
-	public class AbstractJpaQueryBuilder
-	{
-		/**
-		 * Abstracted clauses we're building a query for
-		 */
-		private final List<Clause> clauses;
-
-		/**
-		 * "EJBQL" query string
-		 */
-		private StringBuilder ejbql = new StringBuilder();
-
-		/**
-		 * @param clauses
-		 *            Clauses
-		 */
-		public AbstractJpaQueryBuilder(List<Clause> clauses)
-		{
-			this.clauses = clauses;
-		}
-
-		/**
-		 * @return Query
-		 */
-		@SuppressWarnings("unchecked")
-		public Query build()
-		{
-			// Count clause included?
-			Count count = getClause(Count.class);
-			if (count != null)
-			{
-				append("select count(*) ");
-			}
-
-			// Always add this
-			append("from " + getName() + " target where 1=1 ");
-
-			// Add match constraints
-			Match<T> match = getClause(Match.class);
-			if (match != null)
-			{
-				if (!match.getObject().getClass().isAssignableFrom(type))
-				{
-					throw new IllegalArgumentException("Invalid match clause");
-				}
-				onMatch(match);
-			}
-
-			// Add where constraints if no match clause
-			Where where = getClause(Where.class);
-			if (where != null)
-			{
-				if (match != null)
-				{
-					throw new IllegalStateException(
-							"Cannot use match and where clauses together");
-				}
-				append("and (" + where + ")");
-			}
-
-			// Add sort ordering clauses
-			Ascending ascending = getClause(Ascending.class);
-			if (ascending != null)
-			{
-				onAscending(ascending);
-			}
-			Descending descending = getClause(Descending.class);
-			if (descending != null)
-			{
-				onDescending(descending);
-			}
-
-			// Create query
-			Query query = entityManager.createQuery(ejbql.toString());
-
-			// Set range on query
-			Range range = getClause(Range.class);
-			if (range != null)
-			{
-				query.setFirstResult((int) range.getFirst());
-				query.setMaxResults((int) range.getCount());
-			}
-			return query;
-		}
-
-		/**
-		 * @param name
-		 *            Name of property to match
-		 * @param value
-		 *            Value it should be
-		 */
-		protected void addMatchConstraint(String name, Object value)
-		{
-			if (value instanceof String)
-			{
-				append("and upper(target." + name + ") like ('" + value + "')");
-			}
-			throw new UnsupportedOperationException(
-					"Cannot add match constraint for value of class "
-							+ value.getClass());
-		}
-
-		protected void append(String string)
-		{
-			ejbql.append(string);
-		}
-
-		/**
-		 * Override this method to provide multi-level sorting for a field
-		 * 
-		 * @param ascending
-		 *            Order by clause
-		 */
-		protected void onAscending(Ascending ascending)
-		{
-			append("order by (target." + ascending.getField() + ") asc");
-		}
-
-		/**
-		 * Override this method to provide multi-level sorting for a field
-		 * 
-		 * @param descending
-		 *            Order by clause
-		 */
-		protected void onDescending(Descending descending)
-		{
-			append("order by (target." + descending.getField() + ") desc");
-		}
-
-		/**
-		 * Adds match constraints for all fields of the match object that are
-		 * populated with non-null values
-		 * 
-		 * @param match
-		 *            The object to match by example
-		 */
-		protected void onMatch(Match<T> match)
-		{
-			T object = match.getObject();
-			try
-			{
-				// Get properties
-				final BeanInfo info = Introspector.getBeanInfo(object
-						.getClass());
-
-				// Go through properties
-				for (PropertyDescriptor property : info
-						.getPropertyDescriptors())
-				{
-					addMatchConstraint(property.getName(), property
-							.getReadMethod().invoke(object));
-				}
-			}
-			catch (IntrospectionException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IllegalArgumentException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-			catch (InvocationTargetException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		/**
-		 * Finds a given clause by type if it was passed in to the constructor
-		 * 
-		 * @param <C>
-		 *            Clause type
-		 * @param type
-		 *            The type of clause desired
-		 * @return The clause
-		 */
-		@SuppressWarnings("unchecked")
-		private <C extends Clause> C getClause(Class<C> type)
-		{
-			for (Clause clause : clauses)
-			{
-				if (clause.getClass().equals(type))
-				{
-					return (C) clause;
-				}
-			}
-			return null;
-		}
-	}
+	final Class<T> type;
 
 	/**
 	 * @param type
@@ -265,28 +54,6 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	public AbstractJpaDao(final Class<T> type)
 	{
 		this.type = type;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public long count(Clause... clauses)
-	{
-		// Add count clause before clauses passed in
-		List<Clause> newClauses = new ArrayList<Clause>();
-		newClauses.add(new Count());
-		newClauses.addAll(Arrays.asList(clauses));
-
-		// Build query
-		final Query query = buildQuery(newClauses);
-
-		// Result of query should be a count
-		Long count = (Long) query.getSingleResult();
-		if (count == null)
-		{
-			return 0;
-		}
-		return count;
 	}
 
 	/**
@@ -309,30 +76,9 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public List<T> find(Clause... clauses)
+	public T ensure(T object)
 	{
-		return (List<T>) buildQuery(Arrays.asList(clauses)).getResultList();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public T findFirst(Clause... clauses)
-	{
-		List<T> found = find(clauses);
-		if (found != null && found.size() > 0)
-		{
-			return found.get(0);
-		}
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public T findOrCreate(T object)
-	{
-		T found = findFirst(new Match<T>(object));
+		T found = query(new Match<T>(object)).firstMatch();
 		if (found != null)
 		{
 			return found;
@@ -340,7 +86,15 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 		create(object);
 		return object;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses)
+	{
+		return new JpaQuery<T, PK>(this, clauses);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -359,7 +113,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	{
 		this.entityManager = entityManager;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -369,19 +123,9 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends IPrim
 	}
 
 	/**
-	 * @param clauses
-	 *            The list of abstract clauses to build a query for
-	 * @return The query for the given clauses
-	 */
-	protected Query buildQuery(List<Clause> clauses)
-	{
-		return new AbstractJpaQueryBuilder(clauses).build();
-	}
-
-	/**
 	 * @return The name of this DAO
 	 */
-	private String getName()
+	String getName()
 	{
 		return Classes.simpleName(type);
 	}

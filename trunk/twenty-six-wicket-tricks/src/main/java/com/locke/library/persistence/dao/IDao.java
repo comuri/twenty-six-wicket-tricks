@@ -35,12 +35,57 @@ import com.locke.library.persistence.dao.query.Clause;
 public interface IDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
 {
 	/**
+	 * @param clauses
+	 *            Clauses to use in query
+	 * @return First matching object
+	 */
+	public T findFirst(Clause... clauses);
+
+	/**
+	 * @param object
+	 *            Object to find in database or create
+	 * @return The found object, or the argument (attached to session) if
+	 *         created
+	 */
+	public T findOrCreate(T object);
+
+	/**
+	 * @param clauses
+	 *            Clauses to use in query
+	 * @return Number of objects matching the example object
+	 */
+	long count(Clause... clauses);
+
+	/**
 	 * CREATE object
 	 * 
 	 * @param object
 	 *            Object to create
 	 */
 	void create(T object);
+
+	/**
+	 * DELETE objects matching clauses
+	 * 
+	 * @param clauses
+	 *            The clauses
+	 */
+	void delete(Clause... clauses);
+
+	/**
+	 * DELETE object
+	 * 
+	 * @param object
+	 *            Object to delete
+	 */
+	void delete(T object);
+
+	/**
+	 * @param clauses
+	 *            Clauses to use in query
+	 * @return All matching objects
+	 */
+	List<T> find(Clause... clauses);
 
 	/**
 	 * READ from data source
@@ -58,39 +103,4 @@ public interface IDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
 	 *            Object to update
 	 */
 	void update(T object);
-
-	/**
-	 * DELETE object
-	 * 
-	 * @param object
-	 *            Object to delete
-	 */
-	void delete(T object);
-
-	/**
-	 * DELETE objects matching clauses
-	 * 
-	 * @param clauses
-	 *            The clauses
-	 */
-	void delete(Clause... clauses);
-
-	/**
-	 * DELETE all objects of this type
-	 */
-	void deleteAll();
-
-	/**
-	 * @param clauses
-	 *            Clauses to use in query
-	 * @return All objects in the given range
-	 */
-	List<T> find(Clause... clauses);
-
-	/**
-	 * @param clauses
-	 *            Clauses to use in query
-	 * @return Number of objects matching the example object
-	 */
-	long count(Clause... clauses);
 }

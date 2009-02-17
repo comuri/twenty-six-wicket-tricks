@@ -44,4 +44,16 @@ public class MapList<K, V> extends HashMap<K, List<V>> {
 			values.remove(value);
 		}
 	}
+	
+	public List<V> list(K key) {
+		return super.get(key);
+	}
+	
+	public V first(K key) {
+		List<V> list = list(key);
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
 }

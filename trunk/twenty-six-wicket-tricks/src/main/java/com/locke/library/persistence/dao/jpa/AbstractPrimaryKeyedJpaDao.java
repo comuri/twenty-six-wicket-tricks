@@ -63,6 +63,7 @@ public abstract class AbstractPrimaryKeyedJpaDao<T extends IPersistent<PK>, PK e
 	public void create(T object)
 	{
 		entityManager.persist(object);
+		entityManager.flush();
 	}
 
 	/**

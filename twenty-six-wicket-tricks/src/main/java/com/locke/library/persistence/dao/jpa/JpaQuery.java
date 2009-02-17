@@ -43,13 +43,13 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends IPrimaryKey>
 	/**
 	 * The DAO that this query is for
 	 */
-	private final AbstractJpaDao<T, PK> dao;
+	private final AbstractPrimaryKeyedJpaDao<T, PK> dao;
 
 	/**
 	 * @param clauses
 	 *            Clauses
 	 */
-	public JpaQuery(AbstractJpaDao<T, PK> dao, Clause[] clauses)
+	public JpaQuery(AbstractPrimaryKeyedJpaDao<T, PK> dao, Clause[] clauses)
 	{
 		this(dao, Arrays.asList(clauses));
 	}
@@ -58,7 +58,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends IPrimaryKey>
 	 * @param clauses
 	 *            Clauses
 	 */
-	public JpaQuery(AbstractJpaDao<T, PK> dao, List<? extends Clause> clauses)
+	public JpaQuery(AbstractPrimaryKeyedJpaDao<T, PK> dao, List<? extends Clause> clauses)
 	{
 		this.clauses = clauses;
 		this.dao = dao;

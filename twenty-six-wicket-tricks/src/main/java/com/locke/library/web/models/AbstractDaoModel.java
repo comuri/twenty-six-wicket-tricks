@@ -21,7 +21,7 @@ import org.apache.wicket.model.IModel;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.IPrimaryKey;
-import com.locke.library.persistence.dao.IDao;
+import com.locke.library.persistence.dao.IPrimaryKeyedDao;
 
 /**
  * Base class for persistent models. Holds the object's class and either an id
@@ -160,5 +160,5 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 	/**
 	 * @return The DAO for this model
 	 */
-	protected abstract IDao<T, PK> getDao();
+	protected abstract IPrimaryKeyedDao<T, PK> getDao();
 }

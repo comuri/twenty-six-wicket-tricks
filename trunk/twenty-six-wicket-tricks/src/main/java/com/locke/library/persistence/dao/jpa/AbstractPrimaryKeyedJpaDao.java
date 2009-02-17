@@ -38,9 +38,9 @@ public abstract class AbstractPrimaryKeyedJpaDao<T extends IPersistent<PK>, PK e
 		implements IPrimaryKeyedDao<T, PK>
 {
 	/**
-	 * JPA entity manager injected by Spring
+	 * JPA entity manager
 	 */
-	EntityManager entityManager;
+	final EntityManager entityManager;
 
 	/**
 	 * Class of object managed by this DAO
@@ -51,8 +51,9 @@ public abstract class AbstractPrimaryKeyedJpaDao<T extends IPersistent<PK>, PK e
 	 * @param type
 	 *            Type of object managed by this DAO
 	 */
-	public AbstractPrimaryKeyedJpaDao(final Class<T> type)
+	public AbstractPrimaryKeyedJpaDao(final EntityManager entityManager, final Class<T> type)
 	{
+		this.entityManager = entityManager;
 		this.type = type;
 	}
 
@@ -101,17 +102,6 @@ public abstract class AbstractPrimaryKeyedJpaDao<T extends IPersistent<PK>, PK e
 	public T read(PK id)
 	{
 		return (T) entityManager.find(type, id);
-	}
-
-	/**
-	 * Spring will use this setter to inject a JPA Entity manager.
-	 * 
-	 * @param entityManager
-	 *            Entity manager from Spring
-	 */
-	public void setEntityManager(EntityManager entityManager)
-	{
-		this.entityManager = entityManager;
 	}
 
 	/**

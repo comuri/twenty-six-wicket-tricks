@@ -16,7 +16,7 @@
  */
 package com.locke.library.persistence.dao.query;
 
-import com.locke.library.persistence.dao.IDao;
+import com.locke.library.persistence.dao.IPrimaryKeyedDao;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Descending;
 import com.locke.library.persistence.dao.query.clauses.Match;
@@ -25,7 +25,7 @@ import com.locke.library.persistence.dao.query.clauses.Range;
 /**
  * Base class for abstracted (DAO implementation independent) query clauses.
  * <p>
- * The idea here is that {@link IDao} interfaces can accept a set of abstracted
+ * The idea here is that {@link IPrimaryKeyedDao} interfaces can accept a set of abstracted
  * query clauses that can be translated into native queries by the DAO
  * implementation.
  * 

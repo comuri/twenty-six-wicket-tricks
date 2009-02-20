@@ -16,7 +16,6 @@
  */
 package com.locke.library.locator;
 
-import java.util.List;
 
 /**
  * Interface to code which finds one or more objects.
@@ -33,5 +32,5 @@ public interface ISource<T> {
 	/**
 	 * @return All objects
 	 */
-	List<T> all();
+	Iterable<T> all();
 }

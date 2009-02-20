@@ -18,7 +18,7 @@ package com.locke.library.locator;
 
 
 /**
- * Interface to code which finds one or more objects.
+ * Interface to code which is a source of one or more objects of a given type.
  * 
  * @author Jonathan Locke
  */

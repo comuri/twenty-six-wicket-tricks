@@ -19,7 +19,7 @@ package com.locke.library.locator;
 import java.util.List;
 
 /**
- * Interface to code which locates one or more components.
+ * Interface to code which locates one or more objects.
  * 
  * @author Jonathan Locke
  */

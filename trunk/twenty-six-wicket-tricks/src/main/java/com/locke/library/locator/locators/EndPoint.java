@@ -20,9 +20,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.locke.library.locator.ILocator;
+import com.locke.library.locator.ISource;
 
-public final class EndPoint<T> implements ILocator<T>, Serializable {
+public final class EndPoint<T> implements ISource<T>, Serializable {
 
 	private static final long serialVersionUID = 5529503615284334432L;
 

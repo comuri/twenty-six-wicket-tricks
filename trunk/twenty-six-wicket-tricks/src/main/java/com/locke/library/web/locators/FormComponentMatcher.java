@@ -20,10 +20,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.FormComponent;
 
-import com.locke.library.locator.ILocator;
+import com.locke.library.locator.ISource;
 
 public class FormComponentMatcher extends ComponentMatcher implements
-		ILocator<Component> {
+		ISource<Component> {
 
 	private static final long serialVersionUID = 6485122336991265698L;
 

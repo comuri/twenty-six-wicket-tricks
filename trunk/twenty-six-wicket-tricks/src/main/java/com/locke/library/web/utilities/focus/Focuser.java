@@ -20,12 +20,12 @@ import java.io.Serializable;
 
 import org.apache.wicket.Component;
 
-import com.locke.library.locator.ILocator;
+import com.locke.library.locator.ISource;
 import com.locke.library.web.behaviors.focus.FocusBehavior;
 
 /**
  * Sets the focus on something {@link IFocusable}, by adding a
- * {@link FocusBehavior} to the component returned by the {@link ILocator} of
+ * {@link FocusBehavior} to the component returned by the {@link ISource} of
  * that {@link IFocusable}.
  * 
  * @author Jonathan Locke
@@ -34,21 +34,21 @@ public class Focuser implements Serializable {
 
 	private static final long serialVersionUID = 452250835800945960L;
 
-	private final ILocator<Component> locator;
+	private final ISource<Component> componentSource;
 
 	/**
 	 * @param focusable
 	 *            The focusable to use when setting focus
 	 */
-	public Focuser(ILocator<Component> locator) {
-		this.locator = locator;
+	public Focuser(ISource<Component> componentSource) {
+		this.componentSource = componentSource;
 	}
 
 	/**
 	 * Sets focus to the first component returned by the locator
 	 */
 	public void setFocus() {
-		final Component focus = locator.first();
+		final Component focus = componentSource.first();
 		if (focus != null) {
 			focus.add(new FocusBehavior());
 		}

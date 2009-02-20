@@ -24,10 +24,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Component.IVisitor;
 
-import com.locke.library.locator.ILocator;
+import com.locke.library.locator.ISource;
 import com.locke.library.utilities.object.MutableValue;
 
-public class ComponentMatcher implements ILocator<Component>, Serializable {
+public class ComponentMatcher implements ISource<Component>, Serializable {
 
 	private static final long serialVersionUID = 5529503615284334432L;
 

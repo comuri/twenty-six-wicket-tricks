@@ -19,11 +19,11 @@ package com.locke.library.event;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.locke.library.locator.ILocator;
+import com.locke.library.locator.ISource;
 
 /**
  * Class for sending events to a specific target or to a list of targets located
- * by an implementation of {@link ILocator}.
+ * by an implementation of {@link ISource}.
  * <p>
  * NOTE: The down-side of {@link EventSender} (as opposed to {@link EventBus})
  * is that located target objects can only implement one event listener (of any
@@ -35,13 +35,13 @@ import com.locke.library.locator.ILocator;
  */
 public class EventSender<T> implements IEventBroadcaster {
 
-	private final ILocator<T> targetLocator;
+	private final ISource<T> targetSource;
 
 	/**
 	 * Construct.
 	 */
 	public EventSender() {
-		this.targetLocator = null;
+		this.targetSource = null;
 	}
 
 	/**
@@ -50,12 +50,12 @@ public class EventSender<T> implements IEventBroadcaster {
 	 * @param targetLocator
 	 *            The target locator
 	 */
-	public EventSender(ILocator<T> targetLocator) {
-		this.targetLocator = targetLocator;
+	public EventSender(ISource<T> targetLocator) {
+		this.targetSource = targetLocator;
 	}
 
 	/**
-	 * @param targetLocator
+	 * @param targetSource
 	 *            The target locator
 	 * @param event
 	 *            The event to send to all located targets
@@ -63,7 +63,7 @@ public class EventSender<T> implements IEventBroadcaster {
 	 */
 	public <E extends IEvent<?>> boolean broadcast(E event) {
 		boolean sent = false;
-		for (T target : targetLocator.all()) {
+		for (T target : targetSource.all()) {
 			sent = send(target, event) || sent;
 		}
 		return sent;

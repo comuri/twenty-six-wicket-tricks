@@ -22,8 +22,8 @@ import org.apache.wicket.Component.IVisitor;
 
 public class Visit {
 
-	public Visit(ILocator<Component> locator, IVisitor<Component> visitor) {
-		for (Component component : locator.all()) {
+	public Visit(ISource<Component> source, IVisitor<Component> visitor) {
+		for (Component component : source.all()) {
 			visitor.component(component);
 		}
 	}

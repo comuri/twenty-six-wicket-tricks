@@ -19,19 +19,19 @@ package com.locke.library.locator;
 import java.util.List;
 
 /**
- * Interface to code which locates one or more objects.
+ * Interface to code which finds one or more objects.
  * 
  * @author Jonathan Locke
  */
-public interface ILocator<T> {
+public interface ISource<T> {
 
 	/**
-	 * @return The first located component only
+	 * @return The first object only
 	 */
 	T first();
 
 	/**
-	 * @return All located components
+	 * @return All objects
 	 */
 	List<T> all();
 }

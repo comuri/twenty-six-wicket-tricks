@@ -16,12 +16,13 @@
  */
 package com.locke.library.web.models;
 
+import java.io.Serializable;
+
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.IPrimaryKey;
-import com.locke.library.persistence.dao.IPrimaryKeyedDao;
+import com.locke.library.persistence.dao.IDao;
 
 /**
  * Base class for persistent models. Holds the object's class and either an id
@@ -33,7 +34,7 @@ import com.locke.library.persistence.dao.IPrimaryKeyedDao;
  * 
  * @param <T>
  */
-public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPrimaryKey>
+public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends Serializable>
 		implements IModel<T>
 {
 
@@ -142,7 +143,8 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 		if (object.getPrimaryKey() == null)
 		{
 			getDao().create(object);
-		} else
+		}
+		else
 		{
 			getDao().update(object);
 		}
@@ -160,5 +162,5 @@ public abstract class AbstractDaoModel<T extends IPersistent<PK>, PK extends IPr
 	/**
 	 * @return The DAO for this model
 	 */
-	protected abstract IPrimaryKeyedDao<T, PK> getDao();
+	protected abstract IDao<T, PK> getDao();
 }

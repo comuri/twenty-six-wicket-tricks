@@ -1,11 +1,11 @@
 package com.locke.library.persistence.dao.query;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.IPrimaryKey;
 
-public abstract class AbstractDaoQuery<T extends IPersistent<PK>, PK extends IPrimaryKey>
+public abstract class AbstractDaoQuery<T extends IPersistent<PK>, PK extends Serializable>
 {
 	/**
 	 * @return First matching object

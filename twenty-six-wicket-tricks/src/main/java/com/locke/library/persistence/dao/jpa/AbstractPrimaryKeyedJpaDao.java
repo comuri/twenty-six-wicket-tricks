@@ -16,13 +16,14 @@
  */
 package com.locke.library.persistence.dao.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.EntityManager;
 
 import org.apache.wicket.util.lang.Classes;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.IPrimaryKey;
-import com.locke.library.persistence.dao.IPrimaryKeyedDao;
+import com.locke.library.persistence.dao.IDao;
 import com.locke.library.persistence.dao.query.AbstractDaoQuery;
 import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.clauses.Match;
@@ -34,8 +35,8 @@ import com.locke.library.persistence.dao.query.clauses.Match;
  * 
  * @param <T>
  */
-public abstract class AbstractPrimaryKeyedJpaDao<T extends IPersistent<PK>, PK extends IPrimaryKey>
-		implements IPrimaryKeyedDao<T, PK>
+public abstract class AbstractPrimaryKeyedJpaDao<T extends IPersistent<PK>, PK extends Serializable>
+		implements IDao<T, PK>
 {
 	/**
 	 * JPA entity manager

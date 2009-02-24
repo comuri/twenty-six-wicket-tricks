@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.IPrimaryKey;
 import com.locke.library.persistence.dao.query.AbstractDaoQuery;
 import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
@@ -27,7 +27,7 @@ import com.locke.library.persistence.dao.query.clauses.Where;
  * 
  * @author Jonathan
  */
-public class JpaQuery<T extends IPersistent<PK>, PK extends IPrimaryKey>
+public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable>
 		extends AbstractDaoQuery<T, PK>
 {
 	/**

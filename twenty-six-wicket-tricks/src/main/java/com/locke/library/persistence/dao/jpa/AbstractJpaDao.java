@@ -1,12 +1,13 @@
 package com.locke.library.persistence.dao.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.EntityManager;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.PersistentIdentifier;
 
-public abstract class AbstractJpaDao<T extends IPersistent<PersistentIdentifier>>
-		extends AbstractPrimaryKeyedJpaDao<T, PersistentIdentifier>
+public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Serializable>
+		extends AbstractPrimaryKeyedJpaDao<T, PK>
 {
 	public AbstractJpaDao(EntityManager entityManager, Class<T> type)
 	{

@@ -298,14 +298,13 @@ public class AttachmentPanel extends GenericPanel<List<IAttachment>> {
 					final String contentType = upload.getContentType();
 					final ByteArrayOutputStream out = new ByteArrayOutputStream();
 					try {
-						Streams.copy(upload.getInputStream(), out, maximumSize
-								.bytes());
-					} catch (IOException e) {
-						e.printStackTrace();
+						Streams.copy(upload.getInputStream(), out, maximumSize);
 					} catch (StreamTooLongException e) {
 						error(String.format(getString("uploadTooBig"),
 								maximumSize.toString()));
 						return;
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 					final byte[] data = out.toByteArray();
 					if (upload != null) {

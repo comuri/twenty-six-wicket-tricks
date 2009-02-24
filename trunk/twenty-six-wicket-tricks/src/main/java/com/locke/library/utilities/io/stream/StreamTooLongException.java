@@ -16,7 +16,9 @@
  */
 package com.locke.library.utilities.io.stream;
 
-public class StreamTooLongException extends Exception {
+import java.io.IOException;
+
+public class StreamTooLongException extends IOException {
 
 	private static final long serialVersionUID = 3060043918165147405L;
 

@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.wicket.util.lang.Bytes;
+
 public class Streams {
 
 	/**
@@ -34,7 +36,7 @@ public class Streams {
 	 * @throws IOException
 	 */
 	public static int copy(final InputStream in, final OutputStream out,
-			final long maximum) throws IOException, StreamTooLongException {
+			final Bytes maximum) throws IOException, StreamTooLongException {
 		final byte[] buffer = new byte[4096];
 		int bytesCopied = 0;
 		while (true) {
@@ -44,11 +46,10 @@ public class Streams {
 			}
 			out.write(buffer, 0, byteCount);
 			bytesCopied += byteCount;
-			if (bytesCopied > maximum) {
+			if (bytesCopied > maximum.bytes()) {
 				throw new StreamTooLongException();
 			}
 		}
 		return bytesCopied;
 	}
-
 }

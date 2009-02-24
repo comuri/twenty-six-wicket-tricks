@@ -16,12 +16,15 @@
  */
 package com.locke.library.persistence;
 
+import java.io.Serializable;
+
 /**
- * A persistent object has a {@link IPrimaryKey} identifier
+ * A persistent object has a {@link Serializable} primary key (because it may be
+ * needed for reloading detached objects in a framework like Wicket)
  * 
  * @author Jonathan Locke
  */
-public interface IPersistent<PK extends IPrimaryKey>
+public interface IPersistent<PK extends Serializable>
 {
 	/**
 	 * @return Primary key value for this persistent object

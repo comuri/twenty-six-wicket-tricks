@@ -43,13 +43,13 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable>
 	/**
 	 * The DAO that this query is for
 	 */
-	private final AbstractPrimaryKeyedJpaDao<T, PK> dao;
+	private final AbstractJpaDao<T, PK> dao;
 
 	/**
 	 * @param clauses
 	 *            Clauses
 	 */
-	public JpaQuery(AbstractPrimaryKeyedJpaDao<T, PK> dao, Clause[] clauses)
+	public JpaQuery(AbstractJpaDao<T, PK> dao, Clause[] clauses)
 	{
 		this(dao, Arrays.asList(clauses));
 	}
@@ -58,7 +58,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable>
 	 * @param clauses
 	 *            Clauses
 	 */
-	public JpaQuery(AbstractPrimaryKeyedJpaDao<T, PK> dao, List<? extends Clause> clauses)
+	public JpaQuery(AbstractJpaDao<T, PK> dao, List<? extends Clause> clauses)
 	{
 		this.clauses = clauses;
 		this.dao = dao;
@@ -90,7 +90,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable>
 	@Override
 	public void delete()
 	{
-		dao.entityManager.createQuery(
+		dao.getEntityManager().createQuery(
 				"delete from " + dao.getName() + " where ").executeUpdate();
 	}
 
@@ -248,7 +248,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable>
 		}
 
 		// Create query
-		final Query query = dao.entityManager.createQuery(ejbql.toString());
+		final Query query = dao.getEntityManager().createQuery(ejbql.toString());
 
 		// Set range on query
 		final Range range = getClause(Range.class);

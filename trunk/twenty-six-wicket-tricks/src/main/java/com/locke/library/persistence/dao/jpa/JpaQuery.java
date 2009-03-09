@@ -138,7 +138,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     protected void addMatchConstraint(String name, Object value)
     {
-        if (value instanceof String)
+        if (value instanceof String || value instanceof Character)
         {
             append("and upper(target." + name + ") like ('" + value + "')");
         }

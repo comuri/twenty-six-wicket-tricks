@@ -161,7 +161,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param match
      *            The object to match by example
      */
-    protected void addMatchConstraints(Object object)
+    protected void addMatchConstraints(String baseName, Object object)
     {
         try
         {
@@ -180,17 +180,27 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
                         final Object returnValue = method.invoke(object);
                         if (returnValue != null)
                         {
+                            // Get the name of the method, prefixed with any
+                            // base name
+                            String name = new MethodName(method).getName();
+                            if (baseName != null)
+                            {
+                                name = baseName + "." + name;
+                            }
+
                             // If the return value is a supported primitive type
                             if (Number.class.isAssignableFrom(returnType)
-                                || String.class.isAssignableFrom(returnType))
+                                || String.class.isAssignableFrom(returnType)
+                                || Character.class.isAssignableFrom(returnType)
+                                || Boolean.class.isAssignableFrom(returnType))
                             {
                                 // Add a match constraint for that value
-                                addMatchConstraint(new MethodName(method).getName(), returnValue);
+                                addMatchConstraint(name, returnValue);
                             }
                             else
                             {
                                 // Add match constraints for sub-object
-                                addMatchConstraints(returnValue);
+                                addMatchConstraints(name, returnValue);
                             }
                         }
                     }
@@ -247,7 +257,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     protected void onMatch(Match<T> match)
     {
-        addMatchConstraints(match.getObject());
+        addMatchConstraints(null, match.getObject());
     }
 
     @SuppressWarnings("unchecked")

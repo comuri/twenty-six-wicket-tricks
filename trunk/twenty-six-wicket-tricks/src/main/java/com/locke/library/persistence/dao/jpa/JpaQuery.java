@@ -178,18 +178,20 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
                         // actual return value
                         final Class<?> returnType = method.getReturnType();
                         final Object returnValue = method.invoke(object);
-
-                        // If the return value is a supported primitive type
-                        if (Number.class.isAssignableFrom(returnType)
-                            || String.class.isAssignableFrom(returnType))
+                        if (returnValue != null)
                         {
-                            // Add a match constraint for that value
-                            addMatchConstraint(new MethodName(method).getName(), returnValue);
-                        }
-                        else
-                        {
-                            // Add match constraints for sub-object
-                            addMatchConstraints(returnValue);
+                            // If the return value is a supported primitive type
+                            if (Number.class.isAssignableFrom(returnType)
+                                || String.class.isAssignableFrom(returnType))
+                            {
+                                // Add a match constraint for that value
+                                addMatchConstraint(new MethodName(method).getName(), returnValue);
+                            }
+                            else
+                            {
+                                // Add match constraints for sub-object
+                                addMatchConstraints(returnValue);
+                            }
                         }
                     }
                 }

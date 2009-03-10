@@ -140,7 +140,13 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     {
         if (value instanceof String || value instanceof Character)
         {
-            append("and upper(target." + name + ") like ('" + value + "')");
+            // All single quote must be replaced with two single quotes to avoid
+            // confusing the DB EJBQL compiler. The interpreter will treat the
+            // back-to-back single quotes as a lone single quote
+            // TODO: There should be an object that ensures that the format is
+            // valid, not just handling this one case.
+            append("and upper(target." + name + ") like ('"
+                   + value.toString().replaceAll("'", "''") + "')");
         }
         else if (value instanceof Number || value instanceof Boolean)
         {

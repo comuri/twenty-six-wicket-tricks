@@ -19,6 +19,8 @@ package com.locke.library.persistence.dao.jpa;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -47,12 +49,19 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     final Class<T> type;
 
     /**
+     * Map from object class to dao
+     */
+    private final Map<Class<?>, AbstractJpaDao<?, ?>> daoForClass =
+            new HashMap<Class<?>, AbstractJpaDao<?, ?>>();
+
+    /**
      * @param type
      *            Type of object managed by this DAO
      */
     public AbstractJpaDao(final Class<T> type)
     {
         this.type = type;
+        this.daoForClass.put(type, this);
     }
 
     /**
@@ -238,9 +247,12 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
         final Object value = readMethod.invoke(object, (Object[])null);
         if (value instanceof IPersistent)
         {
+            // Locate DAO for the value
+            final AbstractJpaDao<?, ?> dao = this.daoForClass.get(object.getClass());
+
             // Query DB for value
             JpaQuery<IPersistent<?>, ?> query =
-                    new JpaQuery(this, new Clause[] { new Match((IPersistent)value) });
+                    new JpaQuery(dao, new Clause[] { new Match((IPersistent)value) });
             final IPersistent<?> found = query.firstMatch();
 
             // If the value was found

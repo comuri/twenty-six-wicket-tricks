@@ -63,9 +63,33 @@ public class MethodName
         return this.prefix;
     }
 
+    public boolean isGetter()
+    {
+        return getPrefix().equals("as") || getPrefix().equals("to") || getPrefix().equals("is")
+               || getPrefix().equals("get");
+    }
+
+    public boolean isSetter()
+    {
+        return getPrefix().equals("set");
+    }
+
+    public String prefixed(final String prefix)
+    {
+        final String name = getName();
+        if (name.length() > 0)
+        {
+            return prefix
+                   + (name.substring(0, 1).toUpperCase() + (name.length() > 1
+                           ? name.substring(1)
+                           : ""));
+        }
+        return prefix;
+    }
+
     private void extract()
     {
-        for (final String prefix : new String[] { "get", "set", "as" })
+        for (final String prefix : new String[] { "get", "set", "as", "to", "is" })
         {
             if (this.fullName.startsWith(prefix))
             {

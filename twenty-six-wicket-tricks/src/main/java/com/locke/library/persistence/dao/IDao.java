@@ -29,56 +29,62 @@ import com.locke.library.persistence.dao.query.Clause;
  * and limit results.
  * 
  * @author Jonathan Locke
- * 
  * @param <T>
  */
 public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
 {
-	/**
-	 * CREATE object
-	 * 
-	 * @param object
-	 *            Object to create
-	 */
-	void create(T object);
+    /**
+     * @param object
+     *            Object whose properties should be attached to any matching
+     *            persistent objects
+     */
+    void attach(T object);
 
-	/**
-	 * DELETE object
-	 * 
-	 * @param object
-	 *            Object to delete
-	 */
-	void delete(T object);
+    /**
+     * CREATE object
+     * 
+     * @param object
+     *            Object to create
+     */
+    void create(T object);
 
-	/**
-	 * @param object
-	 *            Object to find in database or create
-	 * @return The found object, or the argument (attached to session) if
-	 *         created
-	 */
-	T ensure(T object);
+    /**
+     * DELETE object
+     * 
+     * @param object
+     *            Object to delete
+     */
+    void delete(T object);
 
-	/**
-	 * @param clauses
-	 *            Abstract clauses to form query from
-	 * @return Query object
-	 */
-	<C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses);
+    /**
+     * @param object
+     *            Object to find in database or create
+     * @return The found object, or the argument (attached to session) if
+     *         created
+     */
+    T ensure(T object);
 
-	/**
-	 * READ from data source
-	 * 
-	 * @param id
-	 *            Persistent id
-	 * @return Loaded object
-	 */
-	T read(PK id);
+    /**
+     * @param clauses
+     *            Abstract clauses to form query from
+     * @return Query object
+     */
+    <C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses);
 
-	/**
-	 * UPDATE object
-	 * 
-	 * @param object
-	 *            Object to update
-	 */
-	void update(T object);
+    /**
+     * READ from data source
+     * 
+     * @param id
+     *            Persistent id
+     * @return Loaded object
+     */
+    T read(PK id);
+
+    /**
+     * UPDATE object
+     * 
+     * @param object
+     *            Object to update
+     */
+    void update(T object);
 }

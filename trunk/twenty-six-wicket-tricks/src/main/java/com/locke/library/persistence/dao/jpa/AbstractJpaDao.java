@@ -17,6 +17,8 @@
 package com.locke.library.persistence.dao.jpa;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.persistence.EntityManager;
 
@@ -27,96 +29,240 @@ import com.locke.library.persistence.dao.IDao;
 import com.locke.library.persistence.dao.query.AbstractDaoQuery;
 import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.clauses.Match;
+import com.locke.library.utilities.strings.MethodName;
 
 /**
  * Base class for JPA DAO implementations
  * 
  * @author Jonathan Locke
- * 
  * @param <T>
  */
 public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Serializable>
-		implements IDao<T, PK>
+                                                                                         implements
+                                                                                         IDao<T, PK>
 {
-	/**
-	 * Class of object managed by this DAO
-	 */
-	final Class<T> type;
+    /**
+     * Class of object managed by this DAO
+     */
+    final Class<T> type;
 
-	/**
-	 * @param type
-	 *            Type of object managed by this DAO
-	 */
-	public AbstractJpaDao(final Class<T> type)
-	{
-		this.type = type;
-	}
+    /**
+     * @param type
+     *            Type of object managed by this DAO
+     */
+    public AbstractJpaDao(final Class<T> type)
+    {
+        this.type = type;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void create(T object)
-	{
-		getEntityManager().persist(object);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void attach(final T object)
+    {
+        processProperties(object, Mode.ATTACH);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void delete(T object)
-	{
-		getEntityManager().remove(object);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void create(T object)
+    {
+        getEntityManager().persist(object);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public T ensure(T object)
-	{
-		T found = query(new Match<T>(object)).firstMatch();
-		if (found != null)
-		{
-			return found;
-		}
-		create(object);
-		return object;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void delete(T object)
+    {
+        getEntityManager().remove(object);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses)
-	{
-		return new JpaQuery<T, PK>(this, clauses);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public T ensure(final T object)
+    {
+        final T found = query(new Clause[] { new Match<T>(object) }).firstMatch();
+        if (found != null)
+        {
+            return found;
+        }
+        processProperties(object, Mode.ENSURE);
+        create(object);
+        return object;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public T read(PK id)
-	{
-		return (T) getEntityManager().find(type, id);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object object)
+    {
+        if (object instanceof AbstractJpaDao)
+        {
+            AbstractJpaDao<?, ?> that = (AbstractJpaDao<?, ?>)object;
+            return that.type.equals(this.type);
+        }
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void update(T object)
-	{
-		getEntityManager().persist(object);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        return this.type.hashCode();
+    }
 
-	/**
-	 * @return Entity manager to use
-	 */
-	protected abstract EntityManager getEntityManager();
+    /**
+     * {@inheritDoc}
+     */
+    public <C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses)
+    {
+        return new JpaQuery<T, PK>(this, clauses);
+    }
 
-	/**
-	 * @return The name of this DAO
-	 */
-	String getName()
-	{
-		return Classes.simpleName(type);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public T read(PK id)
+    {
+        return getEntityManager().find(this.type, id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void update(T object)
+    {
+        getEntityManager().persist(object);
+    }
+
+    /**
+     * @return Entity manager to use
+     */
+    protected abstract EntityManager getEntityManager();
+
+    /**
+     * @return The name of this DAO
+     */
+    String getName()
+    {
+        return Classes.simpleName(this.type);
+    }
+
+    /**
+     * Attaches or ensures all properties of the given object whose getters are
+     * annotated with {@link Attachable} or {@link Ensurable}
+     * 
+     * @param object
+     *            The object whose properties should be attached or ensured
+     * @param mode
+     *            Either Mode.ENSURE or Mode.ATTACH
+     */
+    private void processProperties(final T object, final Mode mode)
+    {
+        for (final Method method : object.getClass().getMethods())
+        {
+            try
+            {
+                final boolean isAttachable = method.getAnnotation(Attachable.class) != null;
+                final boolean isEnsurable = method.getAnnotation(Ensurable.class) != null;
+                if ((isAttachable && mode == Mode.ATTACH) || (isEnsurable && mode == Mode.ENSURE))
+                {
+                    final MethodName methodName = new MethodName(method);
+                    if (!methodName.isGetter())
+                    {
+                        throw new IllegalStateException("Attachable and/or Ensurable method '"
+                                                        + method + "' is not a getter");
+                    }
+                    final Method writeMethod =
+                            object.getClass().getMethod(methodName.prefixed("set"),
+                                                        method.getReturnType());
+                    if (writeMethod == null)
+                    {
+                        throw new IllegalStateException("No corresponding setter for " + method);
+                    }
+                    processProperty(object, method, writeMethod, mode);
+                }
+            }
+            catch (SecurityException e)
+            {
+                e.printStackTrace();
+            }
+            catch (NoSuchMethodException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalArgumentException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            catch (InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Attaches or ensures the given property of the given object
+     * 
+     * @param object
+     *            The object having the property
+     * @param readMethod
+     *            The property getter
+     * @param writeMethod
+     *            The property setter
+     * @param mode
+     *            Either Mode.ENSURE or Mode.ATTACH
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     */
+    @SuppressWarnings("unchecked")
+    private void processProperty(final T object, final Method readMethod, final Method writeMethod,
+                                 final Mode mode) throws IllegalArgumentException,
+        IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException
+    {
+        // Get property value from getter
+        final Object value = readMethod.invoke(object, (Object[])null);
+        if (value instanceof IPersistent)
+        {
+            // Query DB for value
+            JpaQuery<IPersistent<?>, ?> query =
+                    new JpaQuery(this, new Clause[] { new Match((IPersistent)value) });
+            final IPersistent<?> found = query.firstMatch();
+
+            // If the value was found
+            if (found != null)
+            {
+                // attach found value to property
+                writeMethod.invoke(object, found);
+            }
+            else
+            {
+                // If we're saving un-found values
+                if (mode == Mode.ENSURE)
+                {
+                    // save transient value
+                    getEntityManager().persist(value);
+                }
+            }
+        }
+    }
+
+    enum Mode
+    {
+        ATTACH, ENSURE
+    }
 }

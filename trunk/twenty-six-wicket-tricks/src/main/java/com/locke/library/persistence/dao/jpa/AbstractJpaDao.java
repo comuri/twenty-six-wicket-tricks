@@ -61,7 +61,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     public AbstractJpaDao(final Class<T> type)
     {
         this.type = type;
-        this.daoForClass.put(type, this);
+        daoForClass.put(type, this);
     }
 
     /**
@@ -248,7 +248,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
         if (value instanceof IPersistent)
         {
             // Locate DAO for the value
-            final AbstractJpaDao<?, ?> dao = this.daoForClass.get(object.getClass());
+            final AbstractJpaDao<?, ?> dao = daoForClass.get(object.getClass());
 
             // Query DB for value
             JpaQuery<IPersistent<?>, ?> query =

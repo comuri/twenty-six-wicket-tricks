@@ -44,15 +44,15 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
                                                                                          IDao<T, PK>
 {
     /**
+     * Map from object class to dao
+     */
+    private static final Map<Class<?>, AbstractJpaDao<?, ?>> daoForClass =
+            new HashMap<Class<?>, AbstractJpaDao<?, ?>>();
+
+    /**
      * Class of object managed by this DAO
      */
     final Class<T> type;
-
-    /**
-     * Map from object class to dao
-     */
-    private final Map<Class<?>, AbstractJpaDao<?, ?>> daoForClass =
-            new HashMap<Class<?>, AbstractJpaDao<?, ?>>();
 
     /**
      * @param type

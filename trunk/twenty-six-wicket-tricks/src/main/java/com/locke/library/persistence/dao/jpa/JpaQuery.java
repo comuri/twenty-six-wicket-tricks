@@ -145,8 +145,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             // back-to-back single quotes as a lone single quote
             // TODO: There should be an object that ensures that the format is
             // valid, not just handling this one case.
-            append("and upper(target." + name + ") like ('"
-                   + value.toString().replaceAll("'", "''") + "')");
+            append("and target." + name + " = '" + value.toString().replaceAll("'", "''") + "'");
         }
         else if (value instanceof Number || value instanceof Boolean)
         {

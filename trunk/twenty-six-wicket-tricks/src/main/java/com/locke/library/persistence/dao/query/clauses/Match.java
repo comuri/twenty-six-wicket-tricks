@@ -26,25 +26,34 @@ import com.locke.library.persistence.dao.query.Clause;
  */
 public class Match<T extends IPersistent<?>> extends Clause
 {
-	/**
-	 * The example object
-	 */
-	private final T object;
+    /**
+     * The example object
+     */
+    private final T object;
 
-	/**
-	 * @param object
-	 *            The object with properties that must match
-	 */
-	public Match(T object)
-	{
-		this.object = object;
-	}
+    /**
+     * @param object
+     *            The object with properties that must match
+     */
+    public Match(T object)
+    {
+        this.object = object;
+    }
 
-	/**
-	 * @return The object with properties that must match
-	 */
-	public T getObject()
-	{
-		return object;
-	}
+    /**
+     * @return The object with properties that must match
+     */
+    public T getObject()
+    {
+        return this.object;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        return "[Match " + this.object.getClass() + "]";
+    }
 }

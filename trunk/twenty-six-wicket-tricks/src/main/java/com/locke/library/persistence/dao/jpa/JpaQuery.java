@@ -284,7 +284,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         {
             if (!match.getObject().getClass().isAssignableFrom(this.dao.type))
             {
-                throw new IllegalArgumentException("Invalid match clause");
+                throw new IllegalArgumentException("Invalid match clause: " + match);
             }
             onMatch(match);
         }

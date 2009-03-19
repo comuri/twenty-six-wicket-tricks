@@ -38,7 +38,7 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
      *            Object whose properties should be attached to any matching
      *            persistent objects
      */
-    void attach(T object);
+    void attach(T object);;
 
     /**
      * CREATE object
@@ -65,6 +65,16 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
     T ensure(T object);
 
     /**
+     * Locks the given object
+     * 
+     * @param object
+     *            The object to lock
+     * @param lockType
+     *            The type of lock desired
+     */
+    void lock(T object, LockType lockType);
+
+    /**
      * @param clauses
      *            Abstract clauses to form query from
      * @return Query object
@@ -87,4 +97,9 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
      *            Object to update
      */
     void update(T object);
+
+    public enum LockType
+    {
+        READ, WRITE
+    }
 }

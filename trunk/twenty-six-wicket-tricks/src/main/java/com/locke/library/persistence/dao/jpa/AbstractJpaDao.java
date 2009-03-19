@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 
 import org.apache.wicket.util.lang.Classes;
 
@@ -69,7 +70,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      */
     public void attach(final T object)
     {
-        processProperties(object, Mode.ATTACH);
+        processProperties(object, PropertyProcessingMode.ATTACH);
     }
 
     /**
@@ -98,7 +99,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
         {
             return found;
         }
-        processProperties(object, Mode.ENSURE);
+        processProperties(object, PropertyProcessingMode.ENSURE);
         create(object);
         return object;
     }
@@ -124,6 +125,25 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     public int hashCode()
     {
         return this.type.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void lock(T object, LockType lockType)
+    {
+        if (lockType == LockType.READ)
+        {
+            getEntityManager().lock(object, LockModeType.READ);
+        }
+        else if (lockType == LockType.WRITE)
+        {
+            getEntityManager().lock(object, LockModeType.WRITE);
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Unsupported lock type " + lockType);
+        }
     }
 
     /**
@@ -172,7 +192,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      * @param mode
      *            Either Mode.ENSURE or Mode.ATTACH
      */
-    private void processProperties(final T object, final Mode mode)
+    private void processProperties(final T object, final PropertyProcessingMode mode)
     {
         for (final Method method : object.getClass().getMethods())
         {
@@ -180,7 +200,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
             {
                 final boolean isAttachable = method.getAnnotation(Attachable.class) != null;
                 final boolean isEnsurable = method.getAnnotation(Ensurable.class) != null;
-                if ((isAttachable && mode == Mode.ATTACH) || (isEnsurable && mode == Mode.ENSURE))
+                if ((isAttachable && mode == PropertyProcessingMode.ATTACH) || (isEnsurable && mode == PropertyProcessingMode.ENSURE))
                 {
                     final MethodName methodName = new MethodName(method);
                     if (!methodName.isGetter())
@@ -240,7 +260,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      */
     @SuppressWarnings("unchecked")
     private void processProperty(final T object, final Method readMethod, final Method writeMethod,
-                                 final Mode mode) throws IllegalArgumentException,
+                                 final PropertyProcessingMode mode) throws IllegalArgumentException,
         IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException
     {
         // Get property value from getter
@@ -264,7 +284,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
             else
             {
                 // If we're saving un-found values
-                if (mode == Mode.ENSURE)
+                if (mode == PropertyProcessingMode.ENSURE)
                 {
                     // save transient value
                     getEntityManager().persist(value);
@@ -273,7 +293,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
         }
     }
 
-    enum Mode
+    enum PropertyProcessingMode
     {
         ATTACH, ENSURE
     }

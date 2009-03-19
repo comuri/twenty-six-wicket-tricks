@@ -105,8 +105,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     @Override
     public void delete()
     {
-        this.dao.getEntityManager().createQuery("delete from " + this.dao.getName() + " where ")
-                .executeUpdate();
+        append("delete ");
+        build(this.clauses).executeUpdate();
     }
 
     /**
@@ -193,11 +193,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
                                 name = baseName + "." + name;
                             }
 
-                            // If the return value is a supported primitive type
-                            if (Number.class.isAssignableFrom(returnType)
-                                || String.class.isAssignableFrom(returnType)
-                                || Character.class.isAssignableFrom(returnType)
-                                || Boolean.class.isAssignableFrom(returnType))
+                            // If the return value is a supported type
+                            if (isSupported(returnType))
                             {
                                 // Add a match constraint for that value
                                 addMatchConstraint(name, returnValue);
@@ -345,5 +342,13 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             }
         }
         return null;
+    }
+
+    private boolean isSupported(final Class<?> returnType)
+    {
+        return returnType.isPrimitive() || Number.class.isAssignableFrom(returnType)
+               || String.class.isAssignableFrom(returnType)
+               || Character.class.isAssignableFrom(returnType)
+               || Boolean.class.isAssignableFrom(returnType);
     }
 }

@@ -45,6 +45,8 @@ import com.locke.library.utilities.strings.MethodName;
 public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extends
                                                                           AbstractDaoQuery<T, PK>
 {
+    private boolean addedMatchConstraint;
+
     /**
      * Abstracted clauses we're building a query for
      */
@@ -59,6 +61,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * "EJBQL" query string
      */
     private final StringBuilder ejbql = new StringBuilder();
+
+    private boolean queryablePropertyFound;
 
     /**
      * @param clauses
@@ -138,6 +142,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     protected void addMatchConstraint(String name, Object value)
     {
+        this.addedMatchConstraint = true;
         if (value instanceof String || value instanceof Character)
         {
             // All single quote must be replaced with two single quotes to avoid
@@ -145,11 +150,11 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             // back-to-back single quotes as a lone single quote
             // TODO: There should be an object that ensures that the format is
             // valid, not just handling this one case.
-            append("and target." + name + " = '" + value.toString().replaceAll("'", "''") + "'");
+            append(" and target." + name + " = '" + value.toString().replaceAll("'", "''") + "'");
         }
         else if (value instanceof Number || value instanceof Boolean)
         {
-            append("and target." + name + " = " + value);
+            append(" and target." + name + " = " + value);
         }
         else
         {
@@ -179,6 +184,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
                     // If the method is queryable
                     if (annotation instanceof Queryable)
                     {
+                        this.queryablePropertyFound = true;
+
                         // Get the return type and invoke the method to get the
                         // actual return value
                         final Class<?> returnType = method.getReturnType();
@@ -259,7 +266,21 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     protected void onMatch(Match<T> match)
     {
+        this.addedMatchConstraint = false;
         addMatchConstraints(null, match.getObject());
+        if (!this.addedMatchConstraint)
+        {
+            if (!this.queryablePropertyFound)
+            {
+                throw new IllegalStateException("No @Queryable properties found in match against "
+                                                + match.getObject().getClass());
+            }
+            else
+            {
+                throw new IllegalStateException("All @Queryable properties found in match against "
+                                                + match.getObject().getClass() + " were null");
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -294,7 +315,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             {
                 throw new IllegalStateException("Cannot use match and where clauses together");
             }
-            append("and (" + where + ")");
+            append(" and (" + where + ")");
         }
 
         // Add sort ordering clauses

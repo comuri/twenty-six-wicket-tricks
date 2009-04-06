@@ -32,6 +32,15 @@ public class QueryText
         append(string);
     }
 
+    public void and(String string)
+    {
+        if (this.text.length() > 0)
+        {
+            append(" and ");
+        }
+        append(string);
+    }
+
     public void append(String string)
     {
         this.text.append(string);

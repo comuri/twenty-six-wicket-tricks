@@ -36,10 +36,10 @@ import org.apache.wicket.util.string.Strings;
 
 import com.locke.library.utilities.metadata.MetaData;
 import com.locke.library.web.wow.extraction.IPanelExtractor;
-import com.locke.library.web.wow.extraction.extractors.bean.factories.CheckBoxFactory;
-import com.locke.library.web.wow.extraction.extractors.bean.factories.DateFieldFactory;
-import com.locke.library.web.wow.extraction.extractors.bean.factories.IntegerFieldFactory;
-import com.locke.library.web.wow.extraction.extractors.bean.factories.TextFieldFactory;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.CheckBoxExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.DateFieldExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.IntegerFieldExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.TextFieldExtractor;
 
 /**
  * Extracts a list of panel factories from a bean {@link IModel} by inspecting
@@ -75,12 +75,12 @@ public class BeanPropertyPanelExtractor implements Iterable<IPanelExtractor<?>> 
 		public Settings() {
 
 			// Set up defaults for common types
-			map(Boolean.class, CheckBoxFactory.class);
-			map(Boolean.TYPE, CheckBoxFactory.class);
-			map(String.class, TextFieldFactory.class);
-			map(Integer.class, IntegerFieldFactory.class);
-			map(Integer.TYPE, IntegerFieldFactory.class);
-			map(Date.class, DateFieldFactory.class);
+			map(Boolean.class, CheckBoxExtractor.class);
+			map(Boolean.TYPE, CheckBoxExtractor.class);
+			map(String.class, TextFieldExtractor.class);
+			map(Integer.class, IntegerFieldExtractor.class);
+			map(Integer.TYPE, IntegerFieldExtractor.class);
+			map(Date.class, DateFieldExtractor.class);
 		}
 
 		/**

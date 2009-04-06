@@ -26,10 +26,12 @@ import com.locke.library.utilities.metadata.MetaData;
 import com.locke.library.web.wow.layout.layouts.FreeFormLayout;
 
 /**
- * Interface to instantiate a property panel with a given model. Also contains
- * meta-data extracted from the model (for example, a bean
- * {@link PropertyDescriptor}) which can be used to order and place constructed
- * components in a layout.
+ * Extracts a panel from some data source, most likely a Java bean.
+ * <p>
+ * Also gives access to the model which is to be given to the panel and any
+ * meta-data extracted from that model (for example, meta-data might include a
+ * bean {@link PropertyDescriptor}). This information can be used to order and
+ * place extracted panels in a layout.
  * 
  * @author Jonathan Locke
  */

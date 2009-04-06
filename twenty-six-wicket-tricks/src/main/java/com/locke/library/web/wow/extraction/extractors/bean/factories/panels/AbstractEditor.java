@@ -14,35 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import java.util.Date;
-
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.extraction.extractors.bean.factories.editors.DateFieldEditor;
+public class AbstractEditor extends Panel {
 
-/**
- * Panel factory
- * 
- * @author Jonathan Locke
- */
-public class DateFieldFactory extends AbstractLabeledEditorFactory<Date> {
+	private static final long serialVersionUID = 3150846411247504180L;
 
-	private static final long serialVersionUID = -5539198342882441681L;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public DateFieldFactory(IModel<Date> model) {
-		super(model);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Panel extract(String id) {
-		return new DateFieldEditor(id, getLabelModel(), getModel());
+	public AbstractEditor(String id, IModel<?> model) {
+		super(id, model);
+		add(new Label("label", model));
 	}
 }

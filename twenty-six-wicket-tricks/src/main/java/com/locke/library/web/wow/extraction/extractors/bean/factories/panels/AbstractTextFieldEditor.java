@@ -14,33 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.extraction.extractors.bean.factories.editors.TextFieldPanel;
+public class AbstractTextFieldEditor extends AbstractEditor {
 
-/**
- * Panel factory
- * 
- * @author Jonathan Locke
- */
-public class TextFieldFactory extends AbstractLabeledEditorFactory<String> {
+	private static final long serialVersionUID = -6590594319720834079L;
 
-	private static final long serialVersionUID = -2021448611077060882L;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public TextFieldFactory(IModel<String> model) {
-		super(model);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Panel extract(String id) {
-		return new TextFieldPanel(id, getLabelModel(), getModel());
+	public AbstractTextFieldEditor(String id, IModel<String> label) {
+		super(id, label);
 	}
 }

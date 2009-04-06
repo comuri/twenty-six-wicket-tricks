@@ -14,18 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import org.apache.wicket.markup.html.form.TextField;
+import java.util.List;
+
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
 
-public class IntegerFieldPanel extends AbstractTextFieldEditor {
+public class DropDownChoicePanel extends AbstractDropDownChoiceEditor {
 
 	private static final long serialVersionUID = 2232889782978056661L;
 
-	public IntegerFieldPanel(String id, IModel<String> label,
-			IModel<Integer> model) {
+	public <T> DropDownChoicePanel(String id, IModel<String> label,
+			IModel<T> model, IModel<List<? extends T>> choices) {
 		super(id, label);
-		add(new TextField<Integer>("component", model, Integer.class));
+		add(new DropDownChoice<T>("component", model, choices));
 	}
 }

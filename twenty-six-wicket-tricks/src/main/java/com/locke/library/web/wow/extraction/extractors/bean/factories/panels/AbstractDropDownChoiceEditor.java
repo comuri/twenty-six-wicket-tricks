@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.labels;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public class EditorLabel extends Panel {
+public class AbstractDropDownChoiceEditor extends AbstractEditor {
 
-	private static final long serialVersionUID = 3150846411247504180L;
+	private static final long serialVersionUID = -6590594319720834079L;
 
-	public EditorLabel(String id, IModel<?> model) {
-		super(id, model);
-		add(new Label("label", model));
+	public AbstractDropDownChoiceEditor(String id, IModel<String> label) {
+		super(id, label);
 	}
 }

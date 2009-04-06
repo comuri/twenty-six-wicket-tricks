@@ -16,24 +16,28 @@
  */
 package com.locke.library.web.wow.extraction.extractors.bean.factories;
 
+import java.util.List;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.extraction.extractors.bean.factories.editors.CheckBoxEditor;
+import com.locke.library.web.wow.extraction.extractors.bean.AbstractLabeledPanelExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.panels.DropDownChoicePanel;
 
 /**
  * Panel factory
  * 
  * @author Jonathan Locke
  */
-public class CheckBoxFactory extends AbstractLabeledEditorFactory<Boolean> {
+public abstract class DropDownChoiceExtractor<T> extends
+		AbstractLabeledPanelExtractor<T> {
 
-	private static final long serialVersionUID = 3236216946361792794L;
+	private static final long serialVersionUID = -4967380964319730316L;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CheckBoxFactory(IModel<Boolean> model) {
+	public DropDownChoiceExtractor(IModel<T> model) {
 		super(model);
 	}
 
@@ -41,6 +45,11 @@ public class CheckBoxFactory extends AbstractLabeledEditorFactory<Boolean> {
 	 * {@inheritDoc}
 	 */
 	public Panel extract(String id) {
-		return new CheckBoxEditor(id, getLabelModel(), getModel());
+		return new DropDownChoicePanel(id, getLabelModel(), getModel(), getChoices());
 	}
+
+	/**
+	 * @return Choices for drop-downs created by this factory
+	 */
+	public abstract IModel<List<? extends T>> getChoices();
 }

@@ -17,6 +17,7 @@
 package com.locke;
 
 import org.apache.wicket.behavior.HeaderContributor;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
@@ -29,24 +30,25 @@ import org.apache.wicket.util.lang.Classes;
  */
 public abstract class Trick extends WebPage {
 
-	private final HeaderContributor css = HeaderContributor.forCss(Trick.class,
-			Classes.simpleName(Trick.class) + ".css");
+	private final HeaderContributor css = CSSPackageResource
+			.getHeaderContribution(Trick.class, Classes.simpleName(Trick.class)
+					+ ".css");
 
 	/**
 	 * Construct.
 	 */
 	public Trick() {
-		add(css);
+		add(this.css);
 		add(new Label("description", getString("description")));
 		add(new Label("name", new PropertyModel<String>(this, "name")));
 	}
 
-	public String getName() {
-		return Classes.simpleName(getClass());
+	public HeaderContributor getCss() {
+		return this.css;
 	}
 
-	public HeaderContributor getCss() {
-		return css;
+	public String getName() {
+		return Classes.simpleName(getClass());
 	}
 
 	protected IModel<String> getStringModel(final String key) {

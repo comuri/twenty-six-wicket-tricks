@@ -16,7 +16,7 @@
  */
 package com.locke.library.web.panels.ajaxindicator;
 
-import org.apache.wicket.behavior.HeaderContributor;
+import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.lang.Classes;
@@ -27,9 +27,10 @@ public class AjaxWaitIndicator extends Panel {
 
 	public AjaxWaitIndicator(final String id) {
 		super(id);
-		add(HeaderContributor.forJavaScript(AjaxWaitIndicator.class, Classes
-				.simpleName(AjaxWaitIndicator.class)
-				+ ".js"));
+		add(JavascriptPackageResource.getHeaderContribution(
+				AjaxWaitIndicator.class, Classes
+						.simpleName(AjaxWaitIndicator.class)
+						+ ".js"));
 		add(new Image("image", "AjaxWaitIndicator.gif"));
 	}
 }

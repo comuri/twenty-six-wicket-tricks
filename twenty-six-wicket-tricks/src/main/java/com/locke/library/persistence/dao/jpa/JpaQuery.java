@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -120,19 +121,18 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     @Override
     public T firstMatch()
     {
-        List<T> found = matches();
-        if (found != null && found.size() > 0)
+        Iterator<T> found = matches();
+        if (found != null && found.hasNext())
         {
-            return found.get(0);
+            return found.next();
         }
         return null;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<T> matches()
+    public Iterator<T> matches()
     {
-        return build(this.clauses).getResultList();
+        return new JpaQueryResult<T>(build(this.clauses), 1000);
     }
 
     /**

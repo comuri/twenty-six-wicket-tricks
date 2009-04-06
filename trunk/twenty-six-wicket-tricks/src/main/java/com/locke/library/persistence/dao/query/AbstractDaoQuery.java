@@ -1,7 +1,6 @@
 package com.locke.library.persistence.dao.query;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 import com.locke.library.persistence.IPersistent;
 
@@ -27,5 +26,5 @@ public abstract class AbstractDaoQuery<T extends IPersistent<PK>, PK extends Ser
      *            Clauses to use in query
      * @return All matching objects
      */
-    public abstract Iterator<T> matches();
+    public abstract Iterable<T> matches();
 }

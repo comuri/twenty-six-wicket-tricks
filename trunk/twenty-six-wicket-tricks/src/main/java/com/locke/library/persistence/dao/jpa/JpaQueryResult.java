@@ -22,7 +22,7 @@ import javax.persistence.Query;
 /**
  * @author jlocke
  */
-public class JpaQueryResult<T> implements Iterator<T>
+public class JpaQueryResult<T> implements Iterable<T>
 {
     private int index;
     private final int pageSize;
@@ -41,27 +41,36 @@ public class JpaQueryResult<T> implements Iterator<T>
     /**
      * {@inheritDoc}
      */
-    public boolean hasNext()
+    public Iterator<T> iterator()
     {
-        page();
-        return this.index < this.results.size();
-    }
+        return new Iterator<T>()
+        {
+            /**
+             * {@inheritDoc}
+             */
+            public boolean hasNext()
+            {
+                page();
+                return JpaQueryResult.this.index < JpaQueryResult.this.results.size();
+            }
 
-    /**
-     * {@inheritDoc}
-     */
-    public T next()
-    {
-        page();
-        return this.results.get(this.index++);
-    }
+            /**
+             * {@inheritDoc}
+             */
+            public T next()
+            {
+                page();
+                return JpaQueryResult.this.results.get(JpaQueryResult.this.index++);
+            }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void remove()
-    {
-        throw new UnsupportedOperationException();
+            /**
+             * {@inheritDoc}
+             */
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     @SuppressWarnings("unchecked")

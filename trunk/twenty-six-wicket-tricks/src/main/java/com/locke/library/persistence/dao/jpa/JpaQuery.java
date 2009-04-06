@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -70,7 +69,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param clauses
      *            Clauses
      */
-    public JpaQuery(AbstractJpaDao<T, PK> dao, Clause[] clauses)
+    public JpaQuery(final AbstractJpaDao<T, PK> dao, final Clause[] clauses)
     {
         this(dao, Arrays.asList(clauses));
     }
@@ -79,7 +78,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param clauses
      *            Clauses
      */
-    public JpaQuery(AbstractJpaDao<T, PK> dao, List<? extends Clause> clauses)
+    public JpaQuery(final AbstractJpaDao<T, PK> dao, final List<? extends Clause> clauses)
     {
         this.clauses = clauses;
         this.dao = dao;
@@ -92,12 +91,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     public long countMatches()
     {
         // Add count clause before clauses passed in
-        List<Clause> newClauses = new ArrayList<Clause>();
+        final List<Clause> newClauses = new ArrayList<Clause>();
         newClauses.add(new Count());
         newClauses.addAll(this.clauses);
 
         // Result of query should be a count
-        Long count = (Long)build(newClauses).getSingleResult();
+        final Long count = (Long)build(newClauses).getSingleResult();
         if (count == null)
         {
             return 0;
@@ -121,16 +120,15 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     @Override
     public T firstMatch()
     {
-        Iterator<T> found = matches();
-        if (found != null && found.hasNext())
+        for (final T match : matches())
         {
-            return found.next();
+            return match;
         }
         return null;
     }
 
     @Override
-    public Iterator<T> matches()
+    public Iterable<T> matches()
     {
         return new JpaQueryResult<T>(build(this.clauses), 1000);
     }
@@ -141,7 +139,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param value
      *            Value it should be
      */
-    protected void addMatchConstraint(String name, Object value)
+    protected void addMatchConstraint(final String name, final Object value)
     {
         this.addedMatchConstraint = true;
         if (value instanceof String || value instanceof Character)
@@ -173,15 +171,15 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param match
      *            The object to match by example
      */
-    protected void addMatchConstraints(String baseName, Object object)
+    protected void addMatchConstraints(final String baseName, final Object object)
     {
         try
         {
             // Go through methods on this object
-            for (Method method : object.getClass().getMethods())
+            for (final Method method : object.getClass().getMethods())
             {
                 // Go through annotations on the method
-                for (Annotation annotation : method.getAnnotations())
+                for (final Annotation annotation : method.getAnnotations())
                 {
                     // If the method is queryable
                     if (annotation instanceof Queryable)
@@ -218,15 +216,15 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
                 }
             }
         }
-        catch (IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
         {
             e.printStackTrace();
         }
-        catch (IllegalAccessException e)
+        catch (final IllegalAccessException e)
         {
             e.printStackTrace();
         }
-        catch (InvocationTargetException e)
+        catch (final InvocationTargetException e)
         {
             e.printStackTrace();
         }
@@ -238,7 +236,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param ascending
      *            Order by clause
      */
-    protected void onAscending(Ascending ascending)
+    protected void onAscending(final Ascending ascending)
     {
         this.queryText.add("order by (target." + ascending.getField() + ") asc");
     }
@@ -249,7 +247,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param descending
      *            Order by clause
      */
-    protected void onDescending(Descending descending)
+    protected void onDescending(final Descending descending)
     {
         this.queryText.add("order by (target." + descending.getField() + ") desc");
     }
@@ -261,7 +259,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param match
      *            The object to match by example
      */
-    protected void onMatch(Match<T> match)
+    protected void onMatch(final Match<T> match)
     {
         this.addedMatchConstraint = false;
         addMatchConstraints(null, match.getObject());
@@ -281,7 +279,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     }
 
     @SuppressWarnings("unchecked")
-    private Query build(List<? extends Clause> clauses)
+    private Query build(final List<? extends Clause> clauses)
     {
         // Count clause included?
         final Count count = getClause(Count.class);
@@ -350,9 +348,9 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @return The clause
      */
     @SuppressWarnings("unchecked")
-    private <C extends Clause> C getClause(Class<C> type)
+    private <C extends Clause> C getClause(final Class<C> type)
     {
-        for (Clause clause : this.clauses)
+        for (final Clause clause : this.clauses)
         {
             if (clause.getClass().equals(type))
             {

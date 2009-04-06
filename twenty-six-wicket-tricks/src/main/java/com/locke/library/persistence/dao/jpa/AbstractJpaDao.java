@@ -29,8 +29,8 @@ import org.apache.wicket.util.lang.Classes;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.IDao;
-import com.locke.library.persistence.dao.query.AbstractDaoQuery;
-import com.locke.library.persistence.dao.query.Clause;
+import com.locke.library.persistence.dao.query.AbstractQuery;
+import com.locke.library.persistence.dao.query.AbstractClause;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.utilities.strings.MethodName;
 
@@ -94,7 +94,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      */
     public T ensure(final T object)
     {
-        final T found = query(new Clause[] { new Match<T>(object) }).firstMatch();
+        final T found = query(new AbstractClause[] { new Match<T>(object) }).firstMatch();
         if (found != null)
         {
             return found;
@@ -149,7 +149,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public <C extends Clause> AbstractDaoQuery<T, PK> query(C... clauses)
+    public <C extends AbstractClause> AbstractQuery<T, PK> query(C... clauses)
     {
         return new JpaQuery<T, PK>(this, clauses);
     }
@@ -272,7 +272,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
 
             // Query DB for value
             JpaQuery<IPersistent<?>, ?> query =
-                    new JpaQuery(dao, new Clause[] { new Match((IPersistent)value) });
+                    new JpaQuery(dao, new AbstractClause[] { new Match((IPersistent)value) });
             final IPersistent<?> found = query.firstMatch();
 
             // If the value was found

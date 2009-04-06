@@ -33,13 +33,14 @@ import com.locke.library.persistence.dao.query.clauses.Range;
  * @see Descending
  * @see Match
  * @see Range
- * 
  * @author Jonathan Locke
  */
-public abstract class Clause {
+public abstract class AbstractClause
+{
 
-	private static final long serialVersionUID = 592134343965489736L;
+    private static final long serialVersionUID = 592134343965489736L;
 
-	public Clause() {
-	}
+    public AbstractClause()
+    {
+    }
 }

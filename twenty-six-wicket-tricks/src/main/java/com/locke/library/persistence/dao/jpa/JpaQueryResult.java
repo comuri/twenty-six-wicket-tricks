@@ -19,10 +19,12 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.locke.library.persistence.dao.query.AbstractQueryResult;
+
 /**
  * @author jlocke
  */
-public class JpaQueryResult<T> implements Iterable<T>
+public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>
 {
     private int index;
     private final int pageSize;
@@ -71,6 +73,15 @@ public class JpaQueryResult<T> implements Iterable<T>
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<T> matches()
+    {
+        return this;
     }
 
     @SuppressWarnings("unchecked")

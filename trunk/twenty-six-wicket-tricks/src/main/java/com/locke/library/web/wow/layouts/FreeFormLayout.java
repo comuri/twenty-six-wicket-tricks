@@ -19,12 +19,10 @@ package com.locke.library.web.wow.layouts;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import com.locke.library.web.wow.panels.IPanelFactory;
-import com.locke.library.web.wow.panels.IPanelFactorySource;
 
 /**
  * A free-form layout allows a subclass to provide markup and define the precise
- * layout of the automatic components (as constructed from the
- * {@link IPanelFactorySource}). Each component in the layout is simply
+ * layout of the automatic components. Each component in the layout is simply
  * given the {@link IPanelFactory#NAME} metadata value as its id.
  * 
  * @author Jonathan Locke

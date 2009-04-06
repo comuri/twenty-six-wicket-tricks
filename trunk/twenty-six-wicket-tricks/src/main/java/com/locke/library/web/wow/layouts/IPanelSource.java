@@ -16,6 +16,7 @@
  */
 package com.locke.library.web.wow.layouts;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.markup.html.panel.Panel;
@@ -32,5 +33,5 @@ public interface IPanelSource {
 	 *            The identifiers to use when creating components
 	 * @return A list of components
 	 */
-	List<Panel> panels(IPanelIdentifierSource ids);
+	List<Panel> panels(Iterator<String> ids);
 }

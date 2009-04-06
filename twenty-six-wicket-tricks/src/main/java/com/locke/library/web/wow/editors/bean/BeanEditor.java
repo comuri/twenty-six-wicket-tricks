@@ -21,13 +21,13 @@ import org.apache.wicket.model.IModel;
 import com.locke.library.web.panels.IPanelFactory;
 import com.locke.library.web.wow.editors.AbstractEditor;
 import com.locke.library.web.wow.editors.AbstractFormPanel;
-import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.sources.FactoryPanelSource;
-import com.locke.library.web.wow.panels.extractors.bean.BeanExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.BeanPropertyPanelExtractor;
+import com.locke.library.web.wow.layout.IPanelSource;
+import com.locke.library.web.wow.layout.sources.ExtractedPanelSource;
 
 public class BeanEditor<T> extends AbstractEditor<T> {
 
-	private static final BeanExtractor.Settings defaultSettings = new BeanExtractor.Settings();
+	private static final BeanPropertyPanelExtractor.Settings defaultSettings = new BeanPropertyPanelExtractor.Settings();
 
 	private static final long serialVersionUID = 5714763871963883362L;
 
@@ -36,8 +36,8 @@ public class BeanEditor<T> extends AbstractEditor<T> {
 	}
 
 	public BeanEditor(final String id, final IModel<T> model,
-			final BeanExtractor.Settings settings) {
-		this(id, model, new FactoryPanelSource(new BeanExtractor(settings,
+			final BeanPropertyPanelExtractor.Settings settings) {
+		this(id, model, new ExtractedPanelSource(new BeanPropertyPanelExtractor(settings,
 				model).iterator()));
 	}
 

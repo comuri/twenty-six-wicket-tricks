@@ -1,19 +1,25 @@
 package com.locke.library.persistence.dao.query.clauses;
 
 import com.locke.library.persistence.dao.query.Clause;
+import com.locke.library.persistence.dao.query.QueryText;
 
 public class Where extends Clause
 {
-	private final String ejbql;
+    private final QueryText text = new QueryText();
 
-	public Where(final String ejbql)
-	{
-		this.ejbql = ejbql;
-	}
+    public Where(final String ejbql)
+    {
+        this.text.add(ejbql);
+    }
 
-	@Override
-	public String toString()
-	{
-		return ejbql;
-	}
+    public void add(String ejbql)
+    {
+        this.text.add(ejbql);
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.text.toString();
+    }
 }

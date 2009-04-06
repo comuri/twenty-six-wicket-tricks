@@ -29,6 +29,7 @@ import javax.persistence.Query;
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.query.AbstractDaoQuery;
 import com.locke.library.persistence.dao.query.Clause;
+import com.locke.library.persistence.dao.query.QueryText;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Count;
 import com.locke.library.persistence.dao.query.clauses.Descending;
@@ -57,12 +58,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     private final AbstractJpaDao<T, PK> dao;
 
-    /**
-     * "EJBQL" query string
-     */
-    private final StringBuilder ejbql = new StringBuilder();
-
     private boolean queryablePropertyFound;
+
+    /**
+     * The EJBQL text we're building
+     */
+    private final QueryText queryText = new QueryText();
 
     /**
      * @param clauses
@@ -109,7 +110,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     @Override
     public void delete()
     {
-        append("delete ");
+        this.queryText.add("delete");
         build(this.clauses).executeUpdate();
     }
 
@@ -150,11 +151,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             // back-to-back single quotes as a lone single quote
             // TODO: There should be an object that ensures that the format is
             // valid, not just handling this one case.
-            append(" and target." + name + " = '" + value.toString().replaceAll("'", "''") + "'");
+            this.queryText.add("target." + name + " = '" + value.toString().replaceAll("'", "''")
+                               + "'");
         }
         else if (value instanceof Number || value instanceof Boolean)
         {
-            append(" and target." + name + " = " + value);
+            this.queryText.add("and target." + name + " = " + value);
         }
         else
         {
@@ -230,11 +232,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         }
     }
 
-    protected void append(String string)
-    {
-        this.ejbql.append(string);
-    }
-
     /**
      * Override this method to provide multi-level sorting for a field
      * 
@@ -243,7 +240,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     protected void onAscending(Ascending ascending)
     {
-        append("order by (target." + ascending.getField() + ") asc");
+        this.queryText.add("order by (target." + ascending.getField() + ") asc");
     }
 
     /**
@@ -254,7 +251,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      */
     protected void onDescending(Descending descending)
     {
-        append("order by (target." + descending.getField() + ") desc");
+        this.queryText.add("order by (target." + descending.getField() + ") desc");
     }
 
     /**
@@ -290,11 +287,11 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         final Count count = getClause(Count.class);
         if (count != null)
         {
-            append("select count(*) ");
+            this.queryText.add("select count(*)");
         }
 
         // Always add this
-        append("from " + this.dao.getName() + " target where 1=1 ");
+        this.queryText.add("from " + this.dao.getName() + " target where 1=1");
 
         // Add match constraints
         final Match<T> match = getClause(Match.class);
@@ -315,7 +312,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             {
                 throw new IllegalStateException("Cannot use match and where clauses together");
             }
-            append(" and (" + where + ")");
+            this.queryText.add("and (" + where + ")");
         }
 
         // Add sort ordering clauses
@@ -331,7 +328,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         }
 
         // Create query
-        final Query query = this.dao.getEntityManager().createQuery(this.ejbql.toString());
+        final Query query = this.dao.getEntityManager().createQuery(this.queryText.toString());
 
         // Set range on query
         final Range range = getClause(Range.class);

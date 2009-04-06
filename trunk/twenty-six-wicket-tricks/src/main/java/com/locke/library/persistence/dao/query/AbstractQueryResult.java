@@ -18,12 +18,11 @@ package com.locke.library.persistence.dao.query;
  * @author jlocke
  */
 public abstract class AbstractQueryResult<T>
-{   
+{
     /**
      * @param clauses
      *            Clauses to use in query
      * @return All matching objects
      */
     public abstract Iterable<T> matches();
-
 }

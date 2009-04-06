@@ -26,18 +26,13 @@ import com.locke.library.persistence.dao.query.AbstractQueryResult;
  */
 public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>
 {
-    private int index;
     private final int pageSize;
     private final Query query;
-    private List<T> results;
 
     public JpaQueryResult(final Query query, final int pageSize)
     {
         this.query = query;
         this.pageSize = pageSize;
-        this.index = 0;
-        query.setFirstResult(0);
-        query.setMaxResults(pageSize);
     }
 
     /**
@@ -47,13 +42,22 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
     {
         return new Iterator<T>()
         {
+            private int index = 0;
+            private List<T> results;
+
+            // Initializer block
+            {
+                JpaQueryResult.this.query.setFirstResult(0);
+                JpaQueryResult.this.query.setMaxResults(JpaQueryResult.this.pageSize);
+            }
+
             /**
              * {@inheritDoc}
              */
             public boolean hasNext()
             {
                 page();
-                return JpaQueryResult.this.index < JpaQueryResult.this.results.size();
+                return this.index < this.results.size();
             }
 
             /**
@@ -62,7 +66,7 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
             public T next()
             {
                 page();
-                return JpaQueryResult.this.results.get(JpaQueryResult.this.index++);
+                return this.results.get(this.index++);
             }
 
             /**
@@ -71,6 +75,24 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
             public void remove()
             {
                 throw new UnsupportedOperationException();
+            }
+
+            @SuppressWarnings("unchecked")
+            private void page()
+            {
+                // If there are no more results
+                if (this.index >= this.results.size())
+                {
+                    // and the results list was filled
+                    if (this.results.size() == JpaQueryResult.this.pageSize)
+                    {
+                        // try to find more results
+                        JpaQueryResult.this.query.setFirstResult(this.index
+                                                                 + JpaQueryResult.this.pageSize);
+                        // TODO set query hint for cursor
+                        this.results = JpaQueryResult.this.query.getResultList();
+                    }
+                }
             }
         };
     }
@@ -82,22 +104,5 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
     public Iterable<T> matches()
     {
         return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void page()
-    {
-        // If there are no more results
-        if (this.index >= this.results.size())
-        {
-            // and the results list was filled
-            if (this.results.size() == this.pageSize)
-            {
-                // try to find more results
-                this.query.setFirstResult(this.index + this.pageSize);
-                // TODO set query hint for cursor
-                this.results = this.query.getResultList();
-            }
-        }
     }
 }

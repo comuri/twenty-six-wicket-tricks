@@ -23,8 +23,8 @@ import com.locke.library.web.generics.GenericPanel;
 import com.locke.library.web.panels.IPanelFactory;
 import com.locke.library.web.panels.feedback.LocalFeedbackContainer;
 import com.locke.library.web.panels.feedback.LocalFeedbackPanel;
-import com.locke.library.web.wow.layouts.ColumnLayout;
-import com.locke.library.web.wow.layouts.IPanelSource;
+import com.locke.library.web.wow.layout.IPanelSource;
+import com.locke.library.web.wow.layout.layouts.ColumnLayout;
 
 public abstract class AbstractEditor<T> extends Panel {
 

@@ -151,12 +151,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             // back-to-back single quotes as a lone single quote
             // TODO: There should be an object that ensures that the format is
             // valid, not just handling this one case.
-            this.queryText.add("target." + name + " = '" + value.toString().replaceAll("'", "''")
+            this.queryText.and("target." + name + " = '" + value.toString().replaceAll("'", "''")
                                + "'");
         }
         else if (value instanceof Number || value instanceof Boolean)
         {
-            this.queryText.add("and target." + name + " = " + value);
+            this.queryText.and("target." + name + " = " + value);
         }
         else
         {
@@ -312,7 +312,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
             {
                 throw new IllegalStateException("Cannot use match and where clauses together");
             }
-            this.queryText.add("and (" + where + ")");
+            this.queryText.and("(" + where + ")");
         }
 
         // Add sort ordering clauses

@@ -23,6 +23,11 @@ public class Where extends Clause
         this.text.add(ejbql);
     }
 
+    public void and(String ejbql)
+    {
+        this.text.and(ejbql);
+    }
+
     @Override
     public String toString()
     {

@@ -17,22 +17,22 @@
 package com.locke.library.web.wow.layouts.sources;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
 import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
 
 public abstract class PanelList extends ArrayList<Panel> implements
 		IPanelSource {
 
 	private static final long serialVersionUID = -7194986087053264742L;
 
-	public List<Panel> panels(IPanelIdentifierSource ids) {
+	public List<Panel> panels(final Iterator<String> ids) {
 		onInitialize(ids);
 		return this;
 	}
 
-	protected abstract void onInitialize(IPanelIdentifierSource ids);
+	protected abstract void onInitialize(Iterator<String> ids);
 }

@@ -27,28 +27,28 @@ import com.locke.library.web.wow.panels.extractors.bean.BeanExtractor;
 
 public class BeanEditor<T> extends AbstractEditor<T> {
 
-	private static final long serialVersionUID = 5714763871963883362L;
-
 	private static final BeanExtractor.Settings defaultSettings = new BeanExtractor.Settings();
 
-	public BeanEditor(final String id, IModel<T> model) {
+	private static final long serialVersionUID = 5714763871963883362L;
+
+	public BeanEditor(final String id, final IModel<T> model) {
 		this(id, model, defaultSettings);
 	}
 
-	public BeanEditor(final String id, IModel<T> model,
+	public BeanEditor(final String id, final IModel<T> model,
 			final BeanExtractor.Settings settings) {
 		this(id, model, new FactoryPanelSource(new BeanExtractor(settings,
-				model)));
+				model).iterator()));
 	}
 
-	public BeanEditor(final String id, IModel<T> model,
-			IPanelSource panels) {
+	public BeanEditor(final String id, final IModel<T> model,
+			final IPanelSource panels) {
 		super(id, model, panels);
 	}
 
 	@Override
-	protected AbstractFormPanel<T> newFormPanel(String id, IModel<T> model,
-			IPanelFactory fields) {
+	protected AbstractFormPanel<T> newFormPanel(final String id,
+			final IModel<T> model, final IPanelFactory fields) {
 		return new BeanFormPanel<T>(id, model, fields);
 	}
 }

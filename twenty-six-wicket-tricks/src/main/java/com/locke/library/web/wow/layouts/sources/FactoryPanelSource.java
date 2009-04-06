@@ -17,27 +17,27 @@
 package com.locke.library.web.wow.layouts.sources;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
 import com.locke.library.web.wow.layouts.IPanelSource;
-import com.locke.library.web.wow.layouts.IPanelIdentifierSource;
 import com.locke.library.web.wow.panels.IPanelFactory;
-import com.locke.library.web.wow.panels.IPanelFactorySource;
 
 public class FactoryPanelSource implements IPanelSource {
 
-	private final IPanelFactorySource factorySource;
+	private final Iterator<IPanelFactory<?>> factories;
 
-	public FactoryPanelSource(IPanelFactorySource factorySource) {
-		this.factorySource = factorySource;
+	public FactoryPanelSource(final Iterator<IPanelFactory<?>> factories) {
+		this.factories = factories;
 	}
 
-	public List<Panel> panels(IPanelIdentifierSource ids) {
+	public List<Panel> panels(final Iterator<String> ids) {
 		final List<Panel> panels = new ArrayList<Panel>();
-		for (IPanelFactory<?> factory : factorySource.factories()) {
-			panels.add(factory.newPanel(ids.nextId()));
+		while (this.factories.hasNext()) {
+			final IPanelFactory<?> factory = this.factories.next();
+			panels.add(factory.newPanel(ids.next()));
 		}
 		return panels;
 	}

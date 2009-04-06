@@ -28,7 +28,7 @@ import com.locke.library.web.panels.empty.EmptyPanel;
  * 
  * @author Jonathan Locke
  */
-public class ColumnLayout extends AbstractLayout {
+public class ColumnLayout extends AbstractRepeaterLayout {
 
 	private static final long serialVersionUID = 6099939141570065408L;
 

@@ -16,12 +16,12 @@
  */
 package com.locke.library.persistence.dao.query.clauses;
 
-import com.locke.library.persistence.dao.query.Clause;
+import com.locke.library.persistence.dao.query.AbstractClause;
 
 /**
- * Clause for counting the number of matching items
+ * AbstractClause for counting the number of matching items
  * 
  * @author Jonathan Locke
  */
-public class Count extends Clause {
+public class Count extends AbstractClause {
 }

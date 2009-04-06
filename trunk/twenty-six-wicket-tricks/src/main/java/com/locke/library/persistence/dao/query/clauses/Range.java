@@ -16,14 +16,14 @@
  */
 package com.locke.library.persistence.dao.query.clauses;
 
-import com.locke.library.persistence.dao.query.Clause;
+import com.locke.library.persistence.dao.query.AbstractClause;
 
 /**
- * Clause for selecting a range of objects in the result
+ * AbstractClause for selecting a range of objects in the result
  * 
  * @author Jonathan Locke
  */
-public class Range extends Clause {
+public class Range extends AbstractClause {
 
 	private static final long serialVersionUID = 592134343965489736L;
 

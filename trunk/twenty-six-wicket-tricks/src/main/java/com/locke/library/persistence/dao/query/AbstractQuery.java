@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.locke.library.persistence.IPersistent;
 
-public abstract class AbstractDaoQuery<T extends IPersistent<PK>, PK extends Serializable>
+public abstract class AbstractQuery<T extends IPersistent<PK>, PK extends Serializable>
 {
     /**
      * @return Number of objects matching this query

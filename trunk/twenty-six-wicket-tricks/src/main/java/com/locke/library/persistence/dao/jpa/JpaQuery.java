@@ -27,8 +27,8 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.dao.query.AbstractDaoQuery;
-import com.locke.library.persistence.dao.query.Clause;
+import com.locke.library.persistence.dao.query.AbstractQuery;
+import com.locke.library.persistence.dao.query.AbstractClause;
 import com.locke.library.persistence.dao.query.QueryText;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Count;
@@ -44,14 +44,14 @@ import com.locke.library.utilities.strings.MethodName;
  * @author Jonathan
  */
 public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extends
-                                                                          AbstractDaoQuery<T, PK>
+                                                                          AbstractQuery<T, PK>
 {
     private boolean addedMatchConstraint;
 
     /**
      * Abstracted clauses we're building a query for
      */
-    private final List<? extends Clause> clauses;
+    private final List<? extends AbstractClause> clauses;
 
     /**
      * The DAO that this query is for
@@ -69,7 +69,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param clauses
      *            Clauses
      */
-    public JpaQuery(final AbstractJpaDao<T, PK> dao, final Clause[] clauses)
+    public JpaQuery(final AbstractJpaDao<T, PK> dao, final AbstractClause[] clauses)
     {
         this(dao, Arrays.asList(clauses));
     }
@@ -78,7 +78,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param clauses
      *            Clauses
      */
-    public JpaQuery(final AbstractJpaDao<T, PK> dao, final List<? extends Clause> clauses)
+    public JpaQuery(final AbstractJpaDao<T, PK> dao, final List<? extends AbstractClause> clauses)
     {
         this.clauses = clauses;
         this.dao = dao;
@@ -91,7 +91,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     public long countMatches()
     {
         // Add count clause before clauses passed in
-        final List<Clause> newClauses = new ArrayList<Clause>();
+        final List<AbstractClause> newClauses = new ArrayList<AbstractClause>();
         newClauses.add(new Count());
         newClauses.addAll(this.clauses);
 
@@ -279,7 +279,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     }
 
     @SuppressWarnings("unchecked")
-    private Query build(final List<? extends Clause> clauses)
+    private Query build(final List<? extends AbstractClause> clauses)
     {
         // Count clause included?
         final Count count = getClause(Count.class);
@@ -342,15 +342,15 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * Finds a given clause by type if it was passed in to the constructor
      * 
      * @param <C>
-     *            Clause type
+     *            AbstractClause type
      * @param type
      *            The type of clause desired
      * @return The clause
      */
     @SuppressWarnings("unchecked")
-    private <C extends Clause> C getClause(final Class<C> type)
+    private <C extends AbstractClause> C getClause(final Class<C> type)
     {
-        for (final Clause clause : this.clauses)
+        for (final AbstractClause clause : this.clauses)
         {
             if (clause.getClass().equals(type))
             {

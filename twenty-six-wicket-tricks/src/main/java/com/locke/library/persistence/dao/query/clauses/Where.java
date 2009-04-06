@@ -5,10 +5,16 @@ import com.locke.library.persistence.dao.query.QueryText;
 
 public class Where extends Clause
 {
-    private final QueryText text = new QueryText();
+    private final QueryText text;
+
+    public Where(final QueryText text)
+    {
+        this.text = text;
+    }
 
     public Where(final String ejbql)
     {
+        this.text = new QueryText();
         this.text.add(ejbql);
     }
 

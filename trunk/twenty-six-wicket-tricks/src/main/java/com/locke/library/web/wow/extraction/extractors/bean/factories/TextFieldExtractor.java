@@ -14,15 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories;
 
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public class AbstractDropDownChoiceEditor extends AbstractEditor {
+import com.locke.library.web.wow.extraction.extractors.bean.AbstractLabeledPanelExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.panels.TextFieldPanel;
 
-	private static final long serialVersionUID = -6590594319720834079L;
+/**
+ * Panel factory
+ * 
+ * @author Jonathan Locke
+ */
+public class TextFieldExtractor extends AbstractLabeledPanelExtractor<String> {
 
-	public AbstractDropDownChoiceEditor(String id, IModel<String> label) {
-		super(id, label);
+	private static final long serialVersionUID = -2021448611077060882L;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public TextFieldExtractor(IModel<String> model) {
+		super(model);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Panel extract(String id) {
+		return new TextFieldPanel(id, getLabelModel(), getModel());
 	}
 }

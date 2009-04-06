@@ -14,20 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories;
 
 import java.util.Date;
 
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public class DateFieldEditor extends AbstractTextFieldEditor {
+import com.locke.library.web.wow.extraction.extractors.bean.AbstractLabeledPanelExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.panels.DateFieldEditor;
 
-	private static final long serialVersionUID = 2232889782978056661L;
+/**
+ * Panel factory
+ * 
+ * @author Jonathan Locke
+ */
+public class DateFieldExtractor extends AbstractLabeledPanelExtractor<Date> {
 
-	public DateFieldEditor(String id, IModel<String> label, IModel<Date> model) {
-		super(id, label);
-		add(new DateTextField("component", model).add(new DatePicker()));
+	private static final long serialVersionUID = -5539198342882441681L;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public DateFieldExtractor(IModel<Date> model) {
+		super(model);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Panel extract(String id) {
+		return new DateFieldEditor(id, getLabelModel(), getModel());
 	}
 }

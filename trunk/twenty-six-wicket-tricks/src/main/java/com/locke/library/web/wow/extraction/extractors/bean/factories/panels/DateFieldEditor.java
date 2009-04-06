@@ -14,41 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import java.util.List;
+import java.util.Date;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.extraction.extractors.bean.factories.editors.DropDownChoicePanel;
+public class DateFieldEditor extends AbstractTextFieldEditor {
 
-/**
- * Panel factory
- * 
- * @author Jonathan Locke
- */
-public abstract class DropDownChoiceFactory<T> extends
-		AbstractLabeledEditorFactory<T> {
+	private static final long serialVersionUID = 2232889782978056661L;
 
-	private static final long serialVersionUID = -4967380964319730316L;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public DropDownChoiceFactory(IModel<T> model) {
-		super(model);
+	public DateFieldEditor(String id, IModel<String> label, IModel<Date> model) {
+		super(id, label);
+		add(new DateTextField("component", model).add(new DatePicker()));
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Panel extract(String id) {
-		return new DropDownChoicePanel(id, getLabelModel(), getModel(), getChoices());
-	}
-
-	/**
-	 * @return Choices for drop-downs created by this factory
-	 */
-	public abstract IModel<List<? extends T>> getChoices();
 }

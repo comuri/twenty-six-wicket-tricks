@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories;
+package com.locke.library.web.wow.extraction.extractors.bean;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -23,7 +23,7 @@ import org.apache.wicket.model.Model;
 import com.locke.library.utilities.metadata.MetaData;
 import com.locke.library.web.wow.extraction.ILabeledPanelExtractor;
 import com.locke.library.web.wow.extraction.IPanelExtractor;
-import com.locke.library.web.wow.extraction.extractors.bean.factories.labels.EditorLabel;
+import com.locke.library.web.wow.extraction.extractors.bean.labels.PanelLabel;
 
 /**
  * Base implementation of {@link IPanelExtractor}.
@@ -31,7 +31,7 @@ import com.locke.library.web.wow.extraction.extractors.bean.factories.labels.Edi
  * @see IPanelExtractor
  * @author Jonathan Locke
  */
-public abstract class AbstractLabeledEditorFactory<T> implements ILabeledPanelExtractor<T> {
+public abstract class AbstractLabeledPanelExtractor<T> implements ILabeledPanelExtractor<T> {
 
 	private static final long serialVersionUID = -6684693052212706516L;
 
@@ -51,7 +51,7 @@ public abstract class AbstractLabeledEditorFactory<T> implements ILabeledPanelEx
 	 * @param model
 	 *            The model that this factory will assign to created components
 	 */
-	public AbstractLabeledEditorFactory(final IModel<T> model) {
+	public AbstractLabeledPanelExtractor(final IModel<T> model) {
 		this.model = model;
 	}
 
@@ -84,7 +84,7 @@ public abstract class AbstractLabeledEditorFactory<T> implements ILabeledPanelEx
 	/**
 	 * {@inheritDoc}
 	 */
-	public Panel newLabel(String id) {
-		return new EditorLabel(id, getLabelModel());
+	public Panel label(String id) {
+		return new PanelLabel(id, getLabelModel());
 	}
 }

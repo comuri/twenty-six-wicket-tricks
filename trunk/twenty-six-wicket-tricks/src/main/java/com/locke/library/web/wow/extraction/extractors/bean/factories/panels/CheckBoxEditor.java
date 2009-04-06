@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.IModel;
 
-public class TextFieldPanel extends AbstractTextFieldEditor {
+public class CheckBoxEditor extends AbstractEditor {
 
-	private static final long serialVersionUID = 2232889782978056661L;
+	private static final long serialVersionUID = -6590594319720834079L;
 
-	public TextFieldPanel(String id, IModel<String> label, IModel<String> model) {
+	public CheckBoxEditor(String id, IModel<String> label, IModel<Boolean> model) {
 		super(id, label);
-		add(new RequiredTextField<String>("component", model));
+		add(new CheckBox("component", model));
 	}
 }

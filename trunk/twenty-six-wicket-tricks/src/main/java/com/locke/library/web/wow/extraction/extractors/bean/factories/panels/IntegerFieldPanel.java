@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 
-public class AbstractEditor extends Panel {
+public class IntegerFieldPanel extends AbstractTextFieldEditor {
 
-	private static final long serialVersionUID = 3150846411247504180L;
+	private static final long serialVersionUID = 2232889782978056661L;
 
-	public AbstractEditor(String id, IModel<?> model) {
-		super(id, model);
-		add(new Label("label", model));
+	public IntegerFieldPanel(String id, IModel<String> label,
+			IModel<Integer> model) {
+		super(id, label);
+		add(new TextField<Integer>("component", model, Integer.class));
 	}
 }

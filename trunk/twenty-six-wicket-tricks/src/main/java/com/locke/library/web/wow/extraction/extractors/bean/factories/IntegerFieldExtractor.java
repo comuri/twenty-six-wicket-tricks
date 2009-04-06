@@ -14,17 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories;
 
-import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public class CheckBoxEditor extends AbstractEditor {
+import com.locke.library.web.wow.extraction.extractors.bean.AbstractLabeledPanelExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.panels.IntegerFieldPanel;
 
-	private static final long serialVersionUID = -6590594319720834079L;
+/**
+ * Panel factory
+ * 
+ * @author Jonathan Locke
+ */
+public class IntegerFieldExtractor extends AbstractLabeledPanelExtractor<Integer> {
 
-	public CheckBoxEditor(String id, IModel<String> label, IModel<Boolean> model) {
-		super(id, label);
-		add(new CheckBox("component", model));
+	private static final long serialVersionUID = -9162894115066633612L;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IntegerFieldExtractor(IModel<Integer> model) {
+		super(model);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Panel extract(String id) {
+		return new IntegerFieldPanel(id, getLabelModel(), getModel());
 	}
 }

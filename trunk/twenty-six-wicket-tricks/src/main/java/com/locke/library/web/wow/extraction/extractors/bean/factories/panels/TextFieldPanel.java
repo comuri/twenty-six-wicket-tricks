@@ -14,33 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories;
+package com.locke.library.web.wow.extraction.extractors.bean.factories.panels;
 
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.IModel;
 
-import com.locke.library.web.wow.extraction.extractors.bean.factories.editors.IntegerFieldPanel;
+public class TextFieldPanel extends AbstractTextFieldEditor {
 
-/**
- * Panel factory
- * 
- * @author Jonathan Locke
- */
-public class IntegerFieldFactory extends AbstractLabeledEditorFactory<Integer> {
+	private static final long serialVersionUID = 2232889782978056661L;
 
-	private static final long serialVersionUID = -9162894115066633612L;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IntegerFieldFactory(IModel<Integer> model) {
-		super(model);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Panel extract(String id) {
-		return new IntegerFieldPanel(id, getLabelModel(), getModel());
+	public TextFieldPanel(String id, IModel<String> label, IModel<String> model) {
+		super(id, label);
+		add(new RequiredTextField<String>("component", model));
 	}
 }

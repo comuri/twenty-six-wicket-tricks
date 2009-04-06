@@ -9,5 +9,5 @@ public interface ILabeledPanelExtractor<M> extends IPanelExtractor<M> {
 	 *            Label id
 	 * @return The label
 	 */
-	Panel newLabel(String id);
+	Panel label(String id);
 }

@@ -14,20 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.locke.library.web.wow.extraction.extractors.bean.factories.editors;
+package com.locke.library.web.wow.extraction.extractors.bean.factories;
 
-import java.util.List;
-
-import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public class DropDownChoicePanel extends AbstractDropDownChoiceEditor {
+import com.locke.library.web.wow.extraction.extractors.bean.AbstractLabeledPanelExtractor;
+import com.locke.library.web.wow.extraction.extractors.bean.factories.panels.CheckBoxEditor;
 
-	private static final long serialVersionUID = 2232889782978056661L;
+/**
+ * Panel factory
+ * 
+ * @author Jonathan Locke
+ */
+public class CheckBoxExtractor extends AbstractLabeledPanelExtractor<Boolean> {
 
-	public <T> DropDownChoicePanel(String id, IModel<String> label,
-			IModel<T> model, IModel<List<? extends T>> choices) {
-		super(id, label);
-		add(new DropDownChoice<T>("component", model, choices));
+	private static final long serialVersionUID = 3236216946361792794L;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public CheckBoxExtractor(IModel<Boolean> model) {
+		super(model);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Panel extract(String id) {
+		return new CheckBoxEditor(id, getLabelModel(), getModel());
 	}
 }

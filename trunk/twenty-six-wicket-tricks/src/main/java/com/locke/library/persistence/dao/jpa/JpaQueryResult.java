@@ -80,18 +80,14 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
             @SuppressWarnings("unchecked")
             private void page()
             {
-                // If there are no more results
-                if (this.index >= this.results.size())
+                // If no results, or we're on the first index of a page
+                if (this.results == null || this.index % JpaQueryResult.this.pageSize == 0)
                 {
-                    // and the results list was filled
-                    if (this.results.size() == JpaQueryResult.this.pageSize)
-                    {
-                        // try to find more results
-                        JpaQueryResult.this.query.setFirstResult(this.index
-                                                                 + JpaQueryResult.this.pageSize);
-                        // TODO set query hint for cursor
-                        this.results = JpaQueryResult.this.query.getResultList();
-                    }
+                    // we try to find more results
+                    JpaQueryResult.this.query.setFirstResult(this.index);
+                    // TODO set query hint for cursor... maybe pre-fetch on
+                    // separate thread if cursoring doesn't pre-fetch?
+                    this.results = JpaQueryResult.this.query.getResultList();
                 }
             }
         };

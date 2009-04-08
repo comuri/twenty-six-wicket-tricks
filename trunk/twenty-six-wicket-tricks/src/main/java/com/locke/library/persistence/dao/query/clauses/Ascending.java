@@ -17,7 +17,7 @@
 package com.locke.library.persistence.dao.query.clauses;
 
 /**
- * AbstractClause for ascending sort order
+ * Clause for ascending sort order
  * 
  * @author Jonathan Locke
  */

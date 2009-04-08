@@ -17,14 +17,14 @@
 package com.locke.library.persistence.dao.query.clauses;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.dao.query.AbstractClause;
+import com.locke.library.persistence.dao.query.Clause;
 
 /**
- * AbstractClause for query-by-example matching
+ * Clause for query-by-example matching
  * 
  * @author Jonathan Locke
  */
-public class Match<T extends IPersistent<?>> extends AbstractClause
+public class Match<T extends IPersistent<?>> extends Clause
 {
     /**
      * The example object

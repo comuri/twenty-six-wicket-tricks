@@ -29,8 +29,8 @@ import org.apache.wicket.util.lang.Classes;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.IDao;
+import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.AbstractQuery;
-import com.locke.library.persistence.dao.query.AbstractClause;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.utilities.strings.MethodName;
 
@@ -76,7 +76,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public void create(T object)
+    public void create(final T object)
     {
         getEntityManager().persist(object);
     }
@@ -84,7 +84,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public void delete(T object)
+    public void delete(final T object)
     {
         getEntityManager().remove(object);
     }
@@ -94,7 +94,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      */
     public T ensure(final T object)
     {
-        final T found = query(new AbstractClause[] { new Match<T>(object) }).firstMatch();
+        final T found = query(new Clause[] { new Match<T>(object) }).firstMatch();
         if (found != null)
         {
             return found;
@@ -108,11 +108,11 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object object)
+    public boolean equals(final Object object)
     {
         if (object instanceof AbstractJpaDao)
         {
-            AbstractJpaDao<?, ?> that = (AbstractJpaDao<?, ?>)object;
+            final AbstractJpaDao<?, ?> that = (AbstractJpaDao<?, ?>)object;
             return that.type.equals(this.type);
         }
         return false;
@@ -130,7 +130,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public void lock(T object, LockType lockType)
+    public void lock(final T object, final LockType lockType)
     {
         if (lockType == LockType.READ)
         {
@@ -149,15 +149,15 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public <C extends AbstractClause> AbstractQuery<T, PK> query(C... clauses)
+    public <C extends Clause> AbstractQuery<T, PK> query(final C... clauses)
     {
-        return new JpaQuery<T, PK>(this, clauses);
+        return new JpaQuery<T, PK>(this, new ClauseList(clauses));
     }
 
     /**
      * {@inheritDoc}
      */
-    public T read(PK id)
+    public T read(final PK id)
     {
         return getEntityManager().find(this.type, id);
     }
@@ -165,7 +165,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public void update(T object)
+    public void update(final T object)
     {
         getEntityManager().persist(object);
     }
@@ -200,7 +200,8 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
             {
                 final boolean isAttachable = method.getAnnotation(Attachable.class) != null;
                 final boolean isEnsurable = method.getAnnotation(Ensurable.class) != null;
-                if ((isAttachable && mode == PropertyProcessingMode.ATTACH) || (isEnsurable && mode == PropertyProcessingMode.ENSURE))
+                if ((isAttachable && mode == PropertyProcessingMode.ATTACH)
+                    || (isEnsurable && mode == PropertyProcessingMode.ENSURE))
                 {
                     final MethodName methodName = new MethodName(method);
                     if (!methodName.isGetter())
@@ -218,23 +219,23 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
                     processProperty(object, method, writeMethod, mode);
                 }
             }
-            catch (SecurityException e)
+            catch (final SecurityException e)
             {
                 e.printStackTrace();
             }
-            catch (NoSuchMethodException e)
+            catch (final NoSuchMethodException e)
             {
                 e.printStackTrace();
             }
-            catch (IllegalArgumentException e)
+            catch (final IllegalArgumentException e)
             {
                 e.printStackTrace();
             }
-            catch (IllegalAccessException e)
+            catch (final IllegalAccessException e)
             {
                 e.printStackTrace();
             }
-            catch (InvocationTargetException e)
+            catch (final InvocationTargetException e)
             {
                 e.printStackTrace();
             }
@@ -260,8 +261,9 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
      */
     @SuppressWarnings("unchecked")
     private void processProperty(final T object, final Method readMethod, final Method writeMethod,
-                                 final PropertyProcessingMode mode) throws IllegalArgumentException,
-        IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException
+                                 final PropertyProcessingMode mode)
+        throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
+        SecurityException, NoSuchMethodException
     {
         // Get property value from getter
         final Object value = readMethod.invoke(object, (Object[])null);
@@ -271,8 +273,8 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
             final AbstractJpaDao<?, ?> dao = daoForClass.get(value.getClass());
 
             // Query DB for value
-            JpaQuery<IPersistent<?>, ?> query =
-                    new JpaQuery(dao, new AbstractClause[] { new Match((IPersistent)value) });
+            final JpaQuery<IPersistent<?>, ?> query =
+                    new JpaQuery(dao, new ClauseList(new Match((IPersistent)value)));
             final IPersistent<?> found = query.firstMatch();
 
             // If the value was found

@@ -20,19 +20,16 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.persistence.Query;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.query.AbstractQuery;
-import com.locke.library.persistence.dao.query.AbstractClause;
 import com.locke.library.persistence.dao.query.QueryText;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Count;
 import com.locke.library.persistence.dao.query.clauses.Descending;
+import com.locke.library.persistence.dao.query.clauses.Fetch;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.persistence.dao.query.clauses.Range;
 import com.locke.library.persistence.dao.query.clauses.Where;
@@ -51,7 +48,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     /**
      * Abstracted clauses we're building a query for
      */
-    private final List<? extends AbstractClause> clauses;
+    private final ClauseList clauses;
 
     /**
      * The DAO that this query is for
@@ -69,16 +66,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * @param clauses
      *            Clauses
      */
-    public JpaQuery(final AbstractJpaDao<T, PK> dao, final AbstractClause[] clauses)
-    {
-        this(dao, Arrays.asList(clauses));
-    }
-
-    /**
-     * @param clauses
-     *            Clauses
-     */
-    public JpaQuery(final AbstractJpaDao<T, PK> dao, final List<? extends AbstractClause> clauses)
+    public JpaQuery(final AbstractJpaDao<T, PK> dao, final ClauseList clauses)
     {
         this.clauses = clauses;
         this.dao = dao;
@@ -88,10 +76,10 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
      * {@inheritDoc}
      */
     @Override
-    public long countMatches()
+    public int countMatches()
     {
         // Add count clause before clauses passed in
-        final List<AbstractClause> newClauses = new ArrayList<AbstractClause>();
+        final ClauseList newClauses = new ClauseList();
         newClauses.add(new Count());
         newClauses.addAll(this.clauses);
 
@@ -101,7 +89,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         {
             return 0;
         }
-        return count;
+        return count.intValue();
     }
 
     /**
@@ -131,6 +119,16 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     public Iterable<T> matches()
     {
         return new JpaQueryResult<T>(build(this.clauses), 1000);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String query()
+    {
+        build(this.clauses);
+        return this.queryText.toString();
     }
 
     /**
@@ -279,20 +277,31 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     }
 
     @SuppressWarnings("unchecked")
-    private Query build(final List<? extends AbstractClause> clauses)
+    private Query build(final ClauseList clauses)
     {
+        this.queryText.clear();
+
         // Count clause included?
-        final Count count = getClause(Count.class);
+        final Count count = clauses.find(Count.class);
         if (count != null)
         {
             this.queryText.add("select count(*)");
         }
 
         // Always add this
-        this.queryText.add("from " + this.dao.getName() + " target where 1=1");
+        this.queryText.add("from " + this.dao.getName() + " as target");
+
+        // Add any fetch clauses
+        for (final Fetch fetch : clauses.findAll(Fetch.class))
+        {
+            this.queryText.add("left join fetch target." + fetch.getField() + " as ignored"
+                               + fetch.getField());
+        }
+
+        this.queryText.add("where 1=1");
 
         // Add match constraints
-        final Match<T> match = getClause(Match.class);
+        final Match<T> match = clauses.find(Match.class);
         if (match != null)
         {
             if (!match.getObject().getClass().isAssignableFrom(this.dao.type))
@@ -303,61 +312,35 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         }
 
         // Add where constraints if no match clause
-        final Where where = getClause(Where.class);
-        if (where != null)
+        for (final Where where : clauses.findAll(Where.class))
         {
-            if (match != null)
-            {
-                throw new IllegalStateException("Cannot use match and where clauses together");
-            }
             this.queryText.and("(" + where + ")");
         }
 
         // Add sort ordering clauses
-        final Ascending ascending = getClause(Ascending.class);
+        final Ascending ascending = clauses.find(Ascending.class);
         if (ascending != null)
         {
             onAscending(ascending);
         }
-        final Descending descending = getClause(Descending.class);
+        final Descending descending = clauses.find(Descending.class);
         if (descending != null)
         {
             onDescending(descending);
         }
 
         // Create query
+        System.err.println("ejbql: " + this.queryText);
         final Query query = this.dao.getEntityManager().createQuery(this.queryText.toString());
 
         // Set range on query
-        final Range range = getClause(Range.class);
+        final Range range = clauses.find(Range.class);
         if (range != null)
         {
             query.setFirstResult((int)range.getFirst());
             query.setMaxResults((int)range.getCount());
         }
         return query;
-    }
-
-    /**
-     * Finds a given clause by type if it was passed in to the constructor
-     * 
-     * @param <C>
-     *            AbstractClause type
-     * @param type
-     *            The type of clause desired
-     * @return The clause
-     */
-    @SuppressWarnings("unchecked")
-    private <C extends AbstractClause> C getClause(final Class<C> type)
-    {
-        for (final AbstractClause clause : this.clauses)
-        {
-            if (clause.getClass().equals(type))
-            {
-                return (C)clause;
-            }
-        }
-        return null;
     }
 
     private boolean isSupported(final Class<?> returnType)

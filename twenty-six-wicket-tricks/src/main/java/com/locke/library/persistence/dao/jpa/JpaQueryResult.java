@@ -24,15 +24,26 @@ import com.locke.library.persistence.dao.query.AbstractQueryResult;
 /**
  * @author jlocke
  */
-public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>
+public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>, Iterator<T>
 {
+    private int index = 0;
     private final int pageSize;
     private final Query query;
+    private List<T> results;
 
     public JpaQueryResult(final Query query, final int pageSize)
     {
         this.query = query;
         this.pageSize = pageSize;
+        fetchPage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNext()
+    {
+        return this.index % this.pageSize < this.results.size();
     }
 
     /**
@@ -40,57 +51,7 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
      */
     public Iterator<T> iterator()
     {
-        return new Iterator<T>()
-        {
-            private int index = 0;
-            private List<T> results;
-
-            // Initializer block
-            {
-                JpaQueryResult.this.query.setFirstResult(0);
-                JpaQueryResult.this.query.setMaxResults(JpaQueryResult.this.pageSize);
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public boolean hasNext()
-            {
-                page();
-                return this.index < this.results.size();
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public T next()
-            {
-                page();
-                return this.results.get(this.index++);
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-
-            @SuppressWarnings("unchecked")
-            private void page()
-            {
-                // If no results, or we're on the first index of a page
-                if (this.results == null || this.index % JpaQueryResult.this.pageSize == 0)
-                {
-                    // we try to find more results
-                    JpaQueryResult.this.query.setFirstResult(this.index);
-                    // TODO set query hint for cursor... maybe pre-fetch on
-                    // separate thread if cursoring doesn't pre-fetch?
-                    this.results = JpaQueryResult.this.query.getResultList();
-                }
-            }
-        };
+        return this;
     }
 
     /**
@@ -100,5 +61,42 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
     public Iterable<T> matches()
     {
         return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public T next()
+    {
+        // Get next result
+        final int resultsIndex = this.index % this.pageSize;
+        final T result = this.results.get(resultsIndex);
+        this.index++;
+
+        // If we're at the end of this page
+        if (resultsIndex == this.results.size() - 1)
+        {
+            fetchPage();
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void fetchPage()
+    {
+        // we try to find more results
+        JpaQueryResult.this.query.setFirstResult(this.index);
+        JpaQueryResult.this.query.setMaxResults(this.pageSize);
+        // TODO set query hint for cursor... maybe pre-fetch on
+        // separate thread if cursoring doesn't pre-fetch?
+        this.results = this.query.getResultList();
     }
 }

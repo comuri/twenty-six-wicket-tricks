@@ -16,14 +16,14 @@
  */
 package com.locke.library.persistence.dao.query.clauses;
 
-import com.locke.library.persistence.dao.query.AbstractClause;
+import com.locke.library.persistence.dao.query.Clause;
 
 /**
  * Base class for sort ordering clauses
  * 
  * @author Jonathan Locke
  */
-public abstract class SortOrder extends AbstractClause {
+public abstract class SortOrder extends Clause {
 
 	private static final long serialVersionUID = 592134343965489736L;
 

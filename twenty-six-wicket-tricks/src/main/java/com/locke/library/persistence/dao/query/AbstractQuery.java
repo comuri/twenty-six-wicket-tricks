@@ -9,7 +9,7 @@ public abstract class AbstractQuery<T extends IPersistent<PK>, PK extends Serial
     /**
      * @return Number of objects matching this query
      */
-    public abstract long countMatches();
+    public abstract int countMatches();
 
     /**
      * Delete all objects matching this query
@@ -27,4 +27,9 @@ public abstract class AbstractQuery<T extends IPersistent<PK>, PK extends Serial
      * @return All matching objects
      */
     public abstract Iterable<T> matches();
+
+    /**
+     * @return The query text (for debugging)
+     */
+    public abstract String query();
 }

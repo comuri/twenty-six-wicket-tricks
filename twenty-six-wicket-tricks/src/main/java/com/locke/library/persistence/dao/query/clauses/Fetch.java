@@ -12,43 +12,25 @@
 /*                                                               */
 /*****************************************************************/
 
-package com.locke.library.persistence.dao.query;
+package com.locke.library.persistence.dao.query.clauses;
+
+import com.locke.library.persistence.dao.query.Clause;
 
 /**
- * Holds text being built up for a query language statement or clause.
- * 
  * @author jlocke
  */
-public class QueryText
+public class Fetch extends Clause
 {
-    private final StringBuilder text = new StringBuilder();
+    private final String field;
 
-    public void add(final String string)
+    public Fetch(final String field)
     {
-        if (this.text.length() > 0)
-        {
-            append(" ");
-        }
-        append(string);
+        this.field = field;
     }
 
-    public void and(final String string)
+    public String getField()
     {
-        if (this.text.length() > 0)
-        {
-            append(" and ");
-        }
-        append(string);
-    }
-
-    public void append(final String string)
-    {
-        this.text.append(string);
-    }
-
-    public void clear()
-    {
-        this.text.delete(0, this.text.length());
+        return this.field;
     }
 
     /**
@@ -57,6 +39,6 @@ public class QueryText
     @Override
     public String toString()
     {
-        return this.text.toString();
+        return this.field;
     }
 }

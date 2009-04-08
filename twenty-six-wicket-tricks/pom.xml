@@ -19,7 +19,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.locke</groupId>
-	<artifactId>twenty-six-wicket-tricks</artifactId>
+	<artifactId>twenty-six-wicket-tricks
+	</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>twenty-six-wicket-tricks</name>
@@ -31,7 +32,8 @@
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt
+			</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -93,6 +95,7 @@
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>

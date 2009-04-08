@@ -1,9 +1,9 @@
 package com.locke.library.persistence.dao.query.clauses;
 
-import com.locke.library.persistence.dao.query.AbstractClause;
+import com.locke.library.persistence.dao.query.Clause;
 import com.locke.library.persistence.dao.query.QueryText;
 
-public class Where extends AbstractClause
+public class Where extends Clause
 {
     private final QueryText text;
 

@@ -20,13 +20,12 @@ import java.io.Serializable;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.query.Clause;
-import com.locke.library.persistence.dao.query.AbstractQuery;
 
 /**
  * Interface to CRUD (Create, Read, Update, Delete) functionality which persists
  * objects that are {@link IPersistent} as well as find and count functionality
- * which permits (abstracted) queries using {@link Clause}s which
- * filter, sort and limit results.
+ * which permits (abstracted) queries using {@link Clause}s which filter, sort
+ * and limit results.
  * 
  * @author Jonathan Locke
  * @param <T>
@@ -79,7 +78,7 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
      *            Abstract clauses to form query from
      * @return Query object
      */
-    <C extends Clause> AbstractQuery<T, PK> query(C... clauses);
+    <C extends Clause> IQuery<T> query(C... clauses);
 
     /**
      * READ from data source

@@ -19,12 +19,10 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.locke.library.persistence.dao.query.AbstractQueryResult;
-
 /**
  * @author jlocke
  */
-public abstract class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>, Iterator<T>
+public abstract class JpaQueryResult<T> implements Iterable<T>, Iterator<T>
 {
     private int index = 0;
     private final int pageSize;
@@ -41,7 +39,7 @@ public abstract class JpaQueryResult<T> extends AbstractQueryResult<T> implement
      */
     public boolean hasNext()
     {
-        return this.index % this.pageSize < this.results.size();
+        return pageIndex() < this.results.size();
     }
 
     /**
@@ -55,7 +53,6 @@ public abstract class JpaQueryResult<T> extends AbstractQueryResult<T> implement
     /**
      * {@inheritDoc}
      */
-    @Override
     public Iterable<T> matches()
     {
         return this;
@@ -67,15 +64,13 @@ public abstract class JpaQueryResult<T> extends AbstractQueryResult<T> implement
     public T next()
     {
         // Get next result
-        final int resultsIndex = this.index % this.pageSize;
-        final T result = this.results.get(resultsIndex);
-        this.index++;
-
-        // If we're at the end of this page
-        if (resultsIndex == this.results.size() - 1)
+        final int pageIndex = pageIndex();
+        if (pageIndex == 0 && this.index != 0)
         {
             fetchPage();
         }
+        final T result = this.results.get(pageIndex);
+        this.index++;
         return result;
     }
 
@@ -100,5 +95,10 @@ public abstract class JpaQueryResult<T> extends AbstractQueryResult<T> implement
         query.setFirstResult(this.index);
         query.setMaxResults(this.pageSize);
         this.results = query.getResultList();
+    }
+
+    private int pageIndex()
+    {
+        return this.index % this.pageSize;
     }
 }

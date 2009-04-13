@@ -29,8 +29,8 @@ import org.apache.wicket.util.lang.Classes;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.IDao;
+import com.locke.library.persistence.dao.IQuery;
 import com.locke.library.persistence.dao.query.Clause;
-import com.locke.library.persistence.dao.query.AbstractQuery;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.utilities.strings.MethodName;
 
@@ -149,7 +149,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
-    public <C extends Clause> AbstractQuery<T, PK> query(final C... clauses)
+    public <C extends Clause> IQuery<T> query(final C... clauses)
     {
         return new JpaQuery<T, PK>(this, new ClauseList(clauses));
     }

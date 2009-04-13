@@ -24,16 +24,14 @@ import com.locke.library.persistence.dao.query.AbstractQueryResult;
 /**
  * @author jlocke
  */
-public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>, Iterator<T>
+public abstract class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterable<T>, Iterator<T>
 {
     private int index = 0;
     private final int pageSize;
-    private final Query query;
     private List<T> results;
 
-    public JpaQueryResult(final Query query, final int pageSize)
+    public JpaQueryResult(final int pageSize)
     {
-        this.query = query;
         this.pageSize = pageSize;
         fetchPage();
     }
@@ -89,14 +87,18 @@ public class JpaQueryResult<T> extends AbstractQueryResult<T> implements Iterabl
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @return The built query
+     */
+    protected abstract Query buildQuery();
+
     @SuppressWarnings("unchecked")
     private void fetchPage()
     {
         // we try to find more results
-        JpaQueryResult.this.query.setFirstResult(this.index);
-        JpaQueryResult.this.query.setMaxResults(this.pageSize);
-        // TODO set query hint for cursor... maybe pre-fetch on
-        // separate thread if cursoring doesn't pre-fetch?
-        this.results = this.query.getResultList();
+        final Query query = buildQuery();
+        query.setFirstResult(this.index);
+        query.setMaxResults(this.pageSize);
+        this.results = query.getResultList();
     }
 }

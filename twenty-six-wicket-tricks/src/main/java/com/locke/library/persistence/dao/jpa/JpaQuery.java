@@ -330,7 +330,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         }
 
         // Create query
-        System.err.println("ejbql: " + this.queryText);
+        // System.err.println("ejbql: " + this.queryText);
         final Query query = this.dao.getEntityManager().createQuery(this.queryText.toString());
 
         // Set range on query

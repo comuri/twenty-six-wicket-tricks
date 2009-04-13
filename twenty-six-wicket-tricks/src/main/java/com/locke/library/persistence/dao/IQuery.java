@@ -12,17 +12,41 @@
 /*                                                               */
 /*****************************************************************/
 
-package com.locke.library.persistence.dao.query;
+package com.locke.library.persistence.dao;
 
 /**
  * @author jlocke
  */
-public abstract class AbstractQueryResult<T>
+public interface IQuery<T>
 {
     /**
-     * @param clauses
-     *            Clauses to use in query
+     * @return The query text (for debugging)
+     */
+    public abstract String query();
+
+    /**
+     * @return Number of objects matching this query
+     */
+    int countMatches();
+
+    /**
+     * Delete all objects matching this query
+     */
+    void delete();
+
+    /**
+     * @return First matching object
+     */
+    T firstMatch();
+
+    /**
      * @return All matching objects
      */
-    public abstract Iterable<T> matches();
+    Iterable<T> matches();
+
+    /**
+     * @return Pages through matching objects with the given page size. The
+     *         session may be closed at the end of each page.
+     */
+    Iterable<T> page(int pageSize);
 }

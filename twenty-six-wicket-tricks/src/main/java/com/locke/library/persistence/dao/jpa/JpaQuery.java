@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import javax.persistence.Query;
 
 import com.locke.library.persistence.IPersistent;
-import com.locke.library.persistence.dao.query.AbstractQuery;
+import com.locke.library.persistence.dao.IQuery;
 import com.locke.library.persistence.dao.query.QueryText;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Count;
@@ -40,8 +40,7 @@ import com.locke.library.utilities.strings.MethodName;
  * 
  * @author Jonathan
  */
-public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extends
-                                                                          AbstractQuery<T, PK>
+public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implements IQuery<T>
 {
     private boolean addedMatchConstraint;
 
@@ -75,7 +74,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     /**
      * {@inheritDoc}
      */
-    @Override
     public int countMatches()
     {
         // Add count clause before clauses passed in
@@ -95,7 +93,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     /**
      * {@inheritDoc}
      */
-    @Override
     public void delete()
     {
         this.queryText.add("delete");
@@ -105,7 +102,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     /**
      * {@inheritDoc}
      */
-    @Override
     public T firstMatch()
     {
         for (final T match : matches())
@@ -115,14 +111,23 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         return null;
     }
 
-    @Override
     public Iterable<T> matches()
     {
-        return new JpaQueryResult<T>(100)
+        return page(Integer.MAX_VALUE);
+    }
+
+    public Iterable<T> page(final int pageSize)
+    {
+        return new JpaQueryResult<T>(pageSize)
         {
             @Override
             protected Query buildQuery()
             {
+                if (!JpaQuery.this.queryText.toString().isEmpty())
+                {
+                    System.err.println("Closing entity manager!");
+                    JpaQuery.this.dao.getEntityManager().close();
+                }
                 return build(JpaQuery.this.clauses);
             }
         };
@@ -131,7 +136,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     /**
      * {@inheritDoc}
      */
-    @Override
     public String query()
     {
         build(this.clauses);
@@ -337,7 +341,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
         }
 
         // Create query
-        // System.err.println("ejbql: " + this.queryText);
         final Query query = this.dao.getEntityManager().createQuery(this.queryText.toString());
 
         // Set range on query

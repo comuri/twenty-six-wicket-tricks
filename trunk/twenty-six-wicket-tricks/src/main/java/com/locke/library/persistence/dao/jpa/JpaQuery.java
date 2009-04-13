@@ -118,7 +118,14 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> extend
     @Override
     public Iterable<T> matches()
     {
-        return new JpaQueryResult<T>(build(this.clauses), 1000);
+        return new JpaQueryResult<T>(100)
+        {
+            @Override
+            protected Query buildQuery()
+            {
+                return build(JpaQuery.this.clauses);
+            }
+        };
     }
 
     /**

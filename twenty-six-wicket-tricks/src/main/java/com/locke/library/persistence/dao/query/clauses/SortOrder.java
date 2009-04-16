@@ -23,28 +23,31 @@ import com.locke.library.persistence.dao.query.Clause;
  * 
  * @author Jonathan Locke
  */
-public abstract class SortOrder extends Clause {
+public abstract class SortOrder extends Clause
+{
 
-	private static final long serialVersionUID = 592134343965489736L;
+    private static final long serialVersionUID = 592134343965489736L;
 
-	/**
-	 * The field to sort on
-	 */
-	private final String field;
+    /**
+     * The field to sort on
+     */
+    private final String[] fields;
 
-	/**
-	 * @param field
-	 *            Field to sort on
-	 */
-	public SortOrder(String field) {
-		this.field = field;
+    /**
+     * @param fields
+     *            Field to sort on
+     */
+    public SortOrder(final String[] fields)
+    {
+        this.fields = fields;
 
-	}
+    }
 
-	/**
-	 * @return Field to sort on
-	 */
-	public String getField() {
-		return field;
-	}
+    /**
+     * @return Field to sort on
+     */
+    public String[] getFields()
+    {
+        return this.fields;
+    }
 }

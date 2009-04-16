@@ -17,6 +17,7 @@
 package com.locke.library.utilities.collections;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,35 +26,48 @@ import java.util.List;
  * 
  * @author Jonathan Locke
  */
-public class MapList<K, V> extends HashMap<K, List<V>> {
+public class MapList<K, V> extends HashMap<K, List<V>>
+{
 
-	private static final long serialVersionUID = 3462998132471897564L;
+    private static final long serialVersionUID = 3462998132471897564L;
 
-	public void add(K key, V value) {
-		List<V> values = get(key);
-		if (values == null) {
-			values = new ArrayList<V>();
-			put(key, values);
-		}
-		values.add(value);
-	}
+    public void add(final K key, final V value)
+    {
+        List<V> values = get(key);
+        if (values == null)
+        {
+            values = new ArrayList<V>();
+            put(key, values);
+        }
+        values.add(value);
+    }
 
-	public void remove(K key, V value) {
-		List<V> values = get(key);
-		if (values != null) {
-			values.remove(value);
-		}
-	}
-	
-	public List<V> list(K key) {
-		return super.get(key);
-	}
-	
-	public V first(K key) {
-		List<V> list = list(key);
-		if (list != null && list.size() > 0) {
-			return list.get(0);
-		}
-		return null;
-	}
+    public void emptyList(final K key)
+    {
+        put(key, Collections.<V> emptyList());
+    }
+
+    public V first(final K key)
+    {
+        final List<V> list = list(key);
+        if (list != null && list.size() > 0)
+        {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    public List<V> list(final K key)
+    {
+        return super.get(key);
+    }
+
+    public void remove(final K key, final V value)
+    {
+        final List<V> values = get(key);
+        if (values != null)
+        {
+            values.remove(value);
+        }
+    }
 }

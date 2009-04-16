@@ -131,6 +131,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
                 }
                 return build(JpaQuery.this.clauses);
             }
+
+            @Override
+            protected QueryText queryText()
+            {
+                return JpaQuery.this.queryText;
+            }
         };
     }
 
@@ -246,7 +252,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
         {
             fields.add("target." + field);
         }
-        this.queryText.add("order by (" + fields.join() + ") asc");
+        this.queryText.add("order by " + fields.join() + " asc");
     }
 
     /**
@@ -262,7 +268,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
         {
             fields.add("target." + field);
         }
-        this.queryText.add("order by (" + fields.join() + ") desc");
+        this.queryText.add("order by " + fields.join() + " desc");
     }
 
     /**

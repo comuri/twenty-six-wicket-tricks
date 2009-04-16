@@ -19,6 +19,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.locke.library.persistence.dao.query.QueryText;
+
 /**
  * @author jlocke
  */
@@ -87,6 +89,8 @@ public abstract class JpaQueryResult<T> implements Iterable<T>, Iterator<T>
      */
     protected abstract Query buildQuery();
 
+    protected abstract QueryText queryText();
+
     @SuppressWarnings("unchecked")
     private void fetchPage()
     {
@@ -94,7 +98,14 @@ public abstract class JpaQueryResult<T> implements Iterable<T>, Iterator<T>
         final Query query = buildQuery();
         query.setFirstResult(this.index);
         query.setMaxResults(this.pageSize);
-        this.results = query.getResultList();
+        try
+        {
+            this.results = query.getResultList();
+        }
+        catch (final Exception e)
+        {
+            throw new IllegalStateException("Failed executing query " + queryText(), e);
+        }
     }
 
     private int pageIndex()

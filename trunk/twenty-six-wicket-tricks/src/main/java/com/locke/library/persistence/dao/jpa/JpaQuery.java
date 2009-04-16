@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 
 import javax.persistence.Query;
 
+import org.apache.wicket.util.string.StringList;
+
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.IQuery;
 import com.locke.library.persistence.dao.query.QueryText;
@@ -239,7 +241,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
      */
     protected void onAscending(final Ascending ascending)
     {
-        this.queryText.add("order by (target." + ascending.getField() + ") asc");
+        final StringList fields = new StringList();
+        for (final String field : ascending.getFields())
+        {
+            fields.add("target." + field);
+        }
+        this.queryText.add("order by (" + fields.join() + ") asc");
     }
 
     /**
@@ -250,7 +257,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
      */
     protected void onDescending(final Descending descending)
     {
-        this.queryText.add("order by (target." + descending.getField() + ") desc");
+        final StringList fields = new StringList();
+        for (final String field : descending.getFields())
+        {
+            fields.add("target." + field);
+        }
+        this.queryText.add("order by (" + fields.join() + ") desc");
     }
 
     /**

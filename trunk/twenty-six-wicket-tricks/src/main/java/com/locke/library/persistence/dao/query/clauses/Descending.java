@@ -21,11 +21,12 @@ package com.locke.library.persistence.dao.query.clauses;
  * 
  * @author Jonathan Locke
  */
-public class Descending extends SortOrder {
+public class Descending extends SortOrder
+{
+    private static final long serialVersionUID = 592134343965489736L;
 
-	private static final long serialVersionUID = 592134343965489736L;
-
-	public Descending(String field) {
-		super(field);
-	}
+    public Descending(final String... fields)
+    {
+        super(fields);
+    }
 }

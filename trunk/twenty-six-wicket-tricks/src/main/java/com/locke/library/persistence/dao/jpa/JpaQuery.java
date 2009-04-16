@@ -17,7 +17,6 @@
 package com.locke.library.persistence.dao.jpa;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -33,6 +32,7 @@ import com.locke.library.persistence.dao.query.clauses.Fetch;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.persistence.dao.query.clauses.Range;
 import com.locke.library.persistence.dao.query.clauses.Where;
+import com.locke.library.utilities.object.Type;
 import com.locke.library.utilities.strings.MethodName;
 
 /**
@@ -125,7 +125,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
             {
                 if (!JpaQuery.this.queryText.toString().isEmpty())
                 {
-                    System.err.println("Closing entity manager!");
                     JpaQuery.this.dao.getEntityManager().close();
                 }
                 return build(JpaQuery.this.clauses);
@@ -184,43 +183,36 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     {
         try
         {
-            // Go through methods on this object
-            for (final Method method : object.getClass().getMethods())
+            final Type<?> type = Type.forClass(object.getClass());
+            for (final Method method : type.annotatedMethods(Queryable.class))
             {
-                // Go through annotations on the method
-                for (final Annotation annotation : method.getAnnotations())
+                this.queryablePropertyFound = true;
+
+                // Get the return type and invoke the method to get the
+                // actual return value
+                final Class<?> returnType = method.getReturnType();
+                method.setAccessible(true);
+                final Object returnValue = method.invoke(object);
+                if (returnValue != null)
                 {
-                    // If the method is queryable
-                    if (annotation instanceof Queryable)
+                    // Get the name of the method, prefixed with any
+                    // base name
+                    String name = new MethodName(method).getName();
+                    if (baseName != null)
                     {
-                        this.queryablePropertyFound = true;
+                        name = baseName + "." + name;
+                    }
 
-                        // Get the return type and invoke the method to get the
-                        // actual return value
-                        final Class<?> returnType = method.getReturnType();
-                        final Object returnValue = method.invoke(object);
-                        if (returnValue != null)
-                        {
-                            // Get the name of the method, prefixed with any
-                            // base name
-                            String name = new MethodName(method).getName();
-                            if (baseName != null)
-                            {
-                                name = baseName + "." + name;
-                            }
-
-                            // If the return value is a supported type
-                            if (isSupported(returnType))
-                            {
-                                // Add a match constraint for that value
-                                addMatchConstraint(name, returnValue);
-                            }
-                            else
-                            {
-                                // Add match constraints for sub-object
-                                addMatchConstraints(name, returnValue);
-                            }
-                        }
+                    // If the return value is a supported type
+                    if (isSupported(returnType))
+                    {
+                        // Add a match constraint for that value
+                        addMatchConstraint(name, returnValue);
+                    }
+                    else
+                    {
+                        // Add match constraints for sub-object
+                        addMatchConstraints(name, returnValue);
                     }
                 }
             }

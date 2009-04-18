@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.wicket.util.string.StringList;
@@ -125,9 +126,9 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
             @Override
             protected Query buildQuery()
             {
-                if (!JpaQuery.this.queryText.toString().isEmpty())
+                if (getEntityManager().isOpen())
                 {
-                    JpaQuery.this.dao.getEntityManager().close();
+                    getEntityManager().close();
                 }
                 return build(JpaQuery.this.clauses);
             }
@@ -361,6 +362,11 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
             query.setMaxResults((int)range.getCount());
         }
         return query;
+    }
+
+    private EntityManager getEntityManager()
+    {
+        return this.dao.getEntityManager();
     }
 
     private boolean isSupported(final Class<?> returnType)

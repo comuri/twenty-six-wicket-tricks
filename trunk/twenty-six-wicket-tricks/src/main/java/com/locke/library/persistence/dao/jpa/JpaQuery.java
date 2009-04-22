@@ -57,6 +57,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
      */
     private final AbstractJpaDao<T, PK> dao;
 
+    private Query query;
+
     private boolean queryablePropertyFound;
 
     /**
@@ -99,19 +101,16 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     public void delete()
     {
         this.queryText.add("delete");
-        build(this.clauses).executeUpdate();
+        build().executeUpdate();
     }
 
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public T firstMatch()
     {
-        for (final T match : matches())
-        {
-            return match;
-        }
-        return null;
+        return (T)build().getSingleResult();
     }
 
     public Iterable<T> matches()
@@ -121,22 +120,12 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
 
     public Iterable<T> page(final int pageSize)
     {
-        return new JpaQueryResult<T>(pageSize)
+        return new JpaQueryResult<T, PK>(this, pageSize)
         {
             @Override
-            protected Query buildQuery()
+            protected void onBeforeNextPage()
             {
-                if (getEntityManager().isOpen())
-                {
-                    getEntityManager().close();
-                }
-                return build(JpaQuery.this.clauses);
-            }
-
-            @Override
-            protected QueryText queryText()
-            {
-                return JpaQuery.this.queryText;
+                getEntityManager().close();
             }
         };
     }
@@ -144,7 +133,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     /**
      * {@inheritDoc}
      */
-    public String query()
+    public String queryString()
     {
         build(this.clauses);
         return this.queryText.toString();
@@ -296,6 +285,15 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
                                                 + match.getObject().getClass() + " were null");
             }
         }
+    }
+
+    Query build()
+    {
+        if (this.query == null)
+        {
+            this.query = build(this.clauses);
+        }
+        return this.query;
     }
 
     @SuppressWarnings("unchecked")

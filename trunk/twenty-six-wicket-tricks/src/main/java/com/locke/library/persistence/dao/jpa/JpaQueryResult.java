@@ -14,24 +14,32 @@
 
 package com.locke.library.persistence.dao.jpa;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import com.locke.library.persistence.dao.query.QueryText;
+import com.locke.library.persistence.IPersistent;
 
 /**
  * @author jlocke
  */
-public abstract class JpaQueryResult<T> implements Iterable<T>, Iterator<T>
+public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Serializable>
+                                                                                         implements
+                                                                                         Iterable<T>,
+                                                                                         Iterator<T>
 {
     private int index = 0;
+    private final JpaQuery<T, PK> jpaQuery;
     private final int pageSize;
+    private final Query query;
     private List<T> results;
 
-    public JpaQueryResult(final int pageSize)
+    public JpaQueryResult(final JpaQuery<T, PK> jpaQuery, final int pageSize)
     {
+        this.jpaQuery = jpaQuery;
+        this.query = jpaQuery.build();
         this.pageSize = pageSize;
         fetchPage();
     }
@@ -69,6 +77,7 @@ public abstract class JpaQueryResult<T> implements Iterable<T>, Iterator<T>
         final int pageIndex = pageIndex();
         if (pageIndex == 0 && this.index != 0)
         {
+            onBeforeNextPage();
             fetchPage();
         }
         final T result = this.results.get(pageIndex);
@@ -84,27 +93,22 @@ public abstract class JpaQueryResult<T> implements Iterable<T>, Iterator<T>
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * @return The built query
-     */
-    protected abstract Query buildQuery();
-
-    protected abstract QueryText queryText();
+    protected abstract void onBeforeNextPage();
 
     @SuppressWarnings("unchecked")
     private void fetchPage()
     {
         // we try to find more results
-        final Query query = buildQuery();
-        query.setFirstResult(this.index);
-        query.setMaxResults(this.pageSize);
+        this.query.setFirstResult(this.index);
+        this.query.setMaxResults(this.pageSize);
         try
         {
-            this.results = query.getResultList();
+            this.results = this.query.getResultList();
         }
         catch (final Exception e)
         {
-            throw new IllegalStateException("Failed executing query " + queryText(), e);
+            throw new IllegalStateException("Failed executing jpaQuery "
+                                            + this.jpaQuery.queryString(), e);
         }
     }
 

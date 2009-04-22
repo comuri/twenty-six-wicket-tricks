@@ -20,11 +20,6 @@ package com.locke.library.persistence.dao;
 public interface IQuery<T>
 {
     /**
-     * @return The query text (for debugging)
-     */
-    public abstract String queryString();
-
-    /**
      * @return Number of objects matching this query
      */
     int countMatches();

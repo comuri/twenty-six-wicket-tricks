@@ -107,10 +107,9 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public T firstMatch()
     {
-        return (T)build().getSingleResult();
+        return matches().iterator().next();
     }
 
     public Iterable<T> matches()

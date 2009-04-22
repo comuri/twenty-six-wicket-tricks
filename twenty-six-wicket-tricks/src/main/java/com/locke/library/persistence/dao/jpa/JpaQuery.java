@@ -109,7 +109,11 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
      */
     public T firstMatch()
     {
-        return matches().iterator().next();
+        for (final T match : matches())
+        {
+            return match;
+        }
+        return null;
     }
 
     public Iterable<T> matches()

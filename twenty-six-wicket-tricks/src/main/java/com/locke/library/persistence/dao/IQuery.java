@@ -22,7 +22,7 @@ public interface IQuery<T>
     /**
      * @return The query text (for debugging)
      */
-    public abstract String query();
+    public abstract String queryString();
 
     /**
      * @return Number of objects matching this query

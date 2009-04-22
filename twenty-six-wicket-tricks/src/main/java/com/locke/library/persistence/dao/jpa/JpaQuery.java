@@ -133,7 +133,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     /**
      * {@inheritDoc}
      */
-    public String queryString()
+    @Override
+    public String toString()
     {
         build(this.clauses);
         return this.queryText.toString();

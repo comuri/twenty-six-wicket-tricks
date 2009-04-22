@@ -107,8 +107,7 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
         }
         catch (final Exception e)
         {
-            throw new IllegalStateException("Failed executing jpaQuery "
-                                            + this.jpaQuery.queryString(), e);
+            throw new IllegalStateException("Failed executing jpaQuery " + this.jpaQuery, e);
         }
     }
 

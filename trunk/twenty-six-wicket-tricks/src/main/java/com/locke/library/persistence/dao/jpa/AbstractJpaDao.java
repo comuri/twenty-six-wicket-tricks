@@ -26,6 +26,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 
 import org.apache.wicket.util.lang.Classes;
+import org.hibernate.LockMode;
+import org.hibernate.ejb.HibernateEntityManager;
 
 import com.locke.library.persistence.IPersistent;
 import com.locke.library.persistence.dao.IDao;
@@ -66,11 +68,12 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     }
 
     /**
-     * {@inheritDoc}
+     * @param object
+     *            Transient object to attach to session
      */
     public void attach(final T object)
     {
-        processProperties(object, PropertyProcessingMode.ATTACH);
+        lock(object, LockType.ATTACH);
     }
 
     /**
@@ -87,21 +90,6 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     public void delete(final T object)
     {
         getEntityManager().remove(object);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public T ensure(final T object)
-    {
-        final T found = query(new Clause[] { new Match<T>(object) }).firstMatch();
-        if (found != null)
-        {
-            return found;
-        }
-        processProperties(object, PropertyProcessingMode.ENSURE);
-        create(object);
-        return object;
     }
 
     /**
@@ -140,6 +128,11 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
         {
             getEntityManager().lock(object, LockModeType.WRITE);
         }
+        else if (lockType == LockType.ATTACH)
+        {
+            final HibernateEntityManager manager = (HibernateEntityManager)getEntityManager();
+            manager.getSession().lock(object, LockMode.NONE);
+        }
         else
         {
             throw new UnsupportedOperationException("Unsupported lock type " + lockType);
@@ -152,6 +145,29 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     public <C extends Clause> IQuery<T> query(final C... clauses)
     {
         return new JpaQuery<T, PK>(this, new ClauseList(clauses));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void queryAttach(final T object)
+    {
+        processProperties(object, PropertyProcessingMode.ATTACH);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public T queryEnsure(final T object)
+    {
+        final T found = query(new Clause[] { new Match<T>(object) }).firstMatch();
+        if (found != null)
+        {
+            return found;
+        }
+        processProperties(object, PropertyProcessingMode.ENSURE);
+        create(object);
+        return object;
     }
 
     /**

@@ -34,10 +34,9 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
 {
     /**
      * @param object
-     *            Object whose properties should be attached to any matching
-     *            persistent objects
+     *            Transient object to attach to session
      */
-    void attach(T object);
+    public void attach(final T object);
 
     /**
      * CREATE object
@@ -56,14 +55,6 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
     void delete(T object);
 
     /**
-     * @param object
-     *            Object to find in database or create
-     * @return The found object, or the argument (attached to session) if
-     *         created
-     */
-    T ensure(T object);
-
-    /**
      * Locks the given object
      * 
      * @param object
@@ -79,6 +70,21 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
      * @return Query object
      */
     <C extends Clause> IQuery<T> query(C... clauses);
+
+    /**
+     * @param object
+     *            Object whose properties should be attached to any matching
+     *            persistent objects
+     */
+    void queryAttach(T object);
+
+    /**
+     * @param object
+     *            Object to find in database or create
+     * @return The found object, or the argument (attached to session) if
+     *         created
+     */
+    T queryEnsure(T object);
 
     /**
      * READ from data source
@@ -99,6 +105,6 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
 
     public enum LockType
     {
-        READ, WRITE
+        ATTACH, READ, WRITE
     }
 }

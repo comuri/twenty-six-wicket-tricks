@@ -354,7 +354,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
         }
 
         // Create query
-        final Query query = this.dao.getEntityManager().createQuery(this.queryText.toString());
+        final EntityManager entityManager = getEntityManager();
+        final Query query = entityManager.createQuery(this.queryText.toString());
 
         // Set range on query
         final Range range = clauses.find(Range.class);

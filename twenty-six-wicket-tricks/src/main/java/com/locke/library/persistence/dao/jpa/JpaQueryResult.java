@@ -15,6 +15,7 @@
 package com.locke.library.persistence.dao.jpa;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,13 +34,11 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
     private int index = 0;
     private final JpaQuery<T, PK> jpaQuery;
     private final int pageSize;
-    private final Query query;
     private List<T> results;
 
     public JpaQueryResult(final JpaQuery<T, PK> jpaQuery, final int pageSize)
     {
         this.jpaQuery = jpaQuery;
-        this.query = jpaQuery.build();
         this.pageSize = pageSize;
         fetchPage();
     }
@@ -99,11 +98,26 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
     private void fetchPage()
     {
         // we try to find more results
-        this.query.setFirstResult(this.index);
-        this.query.setMaxResults(this.pageSize);
+        final Query query = this.jpaQuery.build();
+
+        query.setFirstResult(this.index);
+        query.setMaxResults(this.pageSize);
         try
         {
-            this.results = this.query.getResultList();
+            final List<?> results = query.getResultList();
+            if (!results.isEmpty() && results.get(0).getClass().isArray())
+            {
+                final List<T> firstColumn = new ArrayList<T>();
+                for (final Object object : results)
+                {
+                    firstColumn.add((T)((Object[])object)[0]);
+                }
+                this.results = firstColumn;
+            }
+            else
+            {
+                this.results = (List<T>)results;
+            }
         }
         catch (final Exception e)
         {

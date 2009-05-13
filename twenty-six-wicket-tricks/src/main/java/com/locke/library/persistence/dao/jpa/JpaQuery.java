@@ -31,6 +31,7 @@ import com.locke.library.persistence.dao.query.QueryText;
 import com.locke.library.persistence.dao.query.clauses.Ascending;
 import com.locke.library.persistence.dao.query.clauses.Count;
 import com.locke.library.persistence.dao.query.clauses.Descending;
+import com.locke.library.persistence.dao.query.clauses.Distinct;
 import com.locke.library.persistence.dao.query.clauses.Fetch;
 import com.locke.library.persistence.dao.query.clauses.Match;
 import com.locke.library.persistence.dao.query.clauses.Range;
@@ -45,6 +46,8 @@ import com.locke.library.utilities.strings.MethodName;
  */
 public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implements IQuery<T>
 {
+    Class<T> restrictToType;
+
     private boolean addedMatchConstraint;
 
     /**
@@ -56,8 +59,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
      * The DAO that this query is for
      */
     private final AbstractJpaDao<T, PK> dao;
-
-    private Query query;
 
     private boolean queryablePropertyFound;
 
@@ -293,11 +294,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
 
     Query build()
     {
-        if (this.query == null)
-        {
-            this.query = build(this.clauses);
-        }
-        return this.query;
+        return build(this.clauses);
     }
 
     @SuppressWarnings("unchecked")
@@ -310,6 +307,11 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
         if (count != null)
         {
             this.queryText.add("select count(*)");
+        }
+
+        for (final Distinct distinct : clauses.findAll(Distinct.class))
+        {
+            this.queryText.add("select distinct target, target." + distinct.getField());
         }
 
         // Always add this

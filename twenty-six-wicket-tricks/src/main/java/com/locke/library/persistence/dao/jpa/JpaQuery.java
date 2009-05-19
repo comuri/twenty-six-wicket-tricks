@@ -186,7 +186,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     {
         try
         {
-            final Type<?> type = Type.forClass(object.getClass());
+            final Type type = Type.forClass(object.getClass());
             for (final Method method : type.annotatedMethods(Queryable.class))
             {
                 this.queryablePropertyFound = true;

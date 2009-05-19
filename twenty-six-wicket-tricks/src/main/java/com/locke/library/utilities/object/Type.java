@@ -8,20 +8,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.util.lang.Classes;
+import org.apache.wicket.util.string.Strings;
 
 import com.locke.library.utilities.collections.MapList;
 
 /**
  * @author jlocke
  */
-public class Type<T>
+public class Type
 {
-    private static final Map<Class<?>, Type<?>> typeMap = new HashMap<Class<?>, Type<?>>();
+    private static final Map<Class<?>, Type> typeMap = new HashMap<Class<?>, Type>();
 
     @SuppressWarnings("unchecked")
-    public static <T> Type<T> forClass(final Class<T> javaType)
+    public static Type forClass(final Class javaType)
     {
-        Type<T> type = (Type<T>)typeMap.get(javaType);
+        Type type = typeMap.get(javaType);
         if (type == null)
         {
             type = new Type(javaType);
@@ -33,9 +34,9 @@ public class Type<T>
     private final List<Method> methods = new ArrayList<Method>();
     private final MapList<Class<? extends Annotation>, Method> methodsForAnnotation =
             new MapList<Class<? extends Annotation>, Method>();
-    private final Class<T> type;
+    private final Class<?> type;
 
-    private Type(final Class<T> type)
+    private Type(final Class<?> type)
     {
         this.type = type;
     }
@@ -87,11 +88,11 @@ public class Type<T>
 
     public String simpleName()
     {
-        final String name = Classes.simpleName(this.type);
-        final int dollarSign = name.lastIndexOf('$');
-        if (dollarSign > 0)
+        final String name = Classes.simpleName(this.type).replace('$', '.');
+        final String end = Strings.lastPathComponent(name, '.');
+        if (end.matches("\\d+"))
         {
-            return name.substring(dollarSign + 1);
+            return Type.forClass(this.type.getSuperclass()).simpleName();
         }
         return name;
     }

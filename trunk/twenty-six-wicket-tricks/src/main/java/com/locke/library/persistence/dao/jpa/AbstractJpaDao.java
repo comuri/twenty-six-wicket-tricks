@@ -76,6 +76,11 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
         lock(object, LockType.ATTACH);
     }
 
+    public void close()
+    {
+        getEntityManager().close();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -98,7 +103,7 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     @Override
     public boolean equals(final Object object)
     {
-        if (object instanceof AbstractJpaDao)
+        if (object instanceof AbstractJpaDao<?, ?>)
         {
             final AbstractJpaDao<?, ?> that = (AbstractJpaDao<?, ?>)object;
             return that.type.equals(this.type);

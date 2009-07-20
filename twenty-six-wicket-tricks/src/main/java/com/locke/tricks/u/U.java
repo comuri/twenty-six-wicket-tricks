@@ -46,121 +46,141 @@ import com.locke.Trick;
  * @author Jonathan Locke
  */
 @SuppressWarnings("serial")
-public class U extends Trick {
+public class U extends Trick
+{
 
-	private abstract class Utility implements Serializable {
+    IDataProvider<Utility> utilitiesDataProvider = new IDataProvider<Utility>()
+    {
 
-		String code;
+        public void detach()
+        {
+        }
 
-		public Utility(final String code) {
-			this.code = code;
-		}
+        public Iterator<? extends Utility> iterator(final int first, final int count)
+        {
+            return U.this.utilities.subList(first, count).iterator();
+        }
 
-		public abstract String getOutput();
-	}
+        public IModel<Utility> model(final Utility object)
+        {
+            return new Model<Utility>(object);
+        }
 
-	private List<Utility> utilities = new ArrayList<Utility>();
+        public int size()
+        {
+            return U.this.utilities.size();
+        }
+    };
 
-	IDataProvider<Utility> utilitiesDataProvider = new IDataProvider<Utility>() {
+    private final List<Utility> utilities = new ArrayList<Utility>();
 
-		public Iterator<? extends Utility> iterator(int first, int count) {
-			return utilities.subList(first, count).iterator();
-		}
+    @SuppressWarnings("unchecked")
+    public U()
+    {
 
-		public IModel<Utility> model(Utility object) {
-			return new Model<Utility>(object);
-		}
+        final IColumn<Utility>[] columns = new IColumn[2];
+        columns[0] = new PropertyColumn<Utility>(new Model<String>("Code"), "code", "code");
+        columns[1] = new PropertyColumn<Utility>(new Model<String>("Output"), "output", "output");
 
-		public int size() {
-			return utilities.size();
-		}
+        final DataTable<Utility> dataTable =
+                new DataTable<Utility>("utilities", columns, this.utilitiesDataProvider,
+                                       Integer.MAX_VALUE);
+        dataTable.addTopToolbar(new HeadersToolbar(dataTable, new ISortStateLocator()
+        {
 
-		public void detach() {
-		}
-	};
+            private ISortState sortState = new SingleSortState();
 
-	@SuppressWarnings("unchecked")
-	public U() {
+            public ISortState getSortState()
+            {
+                return this.sortState;
+            }
 
-		final IColumn<Utility>[] columns = new IColumn[2];
-		columns[0] = new PropertyColumn<Utility>(new Model<String>("Code"),
-				"code", "code");
-		columns[1] = new PropertyColumn<Utility>(new Model<String>("Output"),
-				"output", "output");
+            public void setSortState(final ISortState state)
+            {
+                this.sortState = state;
+            }
+        }));
+        add(dataTable);
 
-		DataTable<Utility> dataTable = new DataTable<Utility>("utilities",
-				columns, utilitiesDataProvider, Integer.MAX_VALUE);
-		dataTable.addTopToolbar(new HeadersToolbar(dataTable,
-				new ISortStateLocator() {
+        this.utilities.add(new Utility("Time.now().toString()")
+        {
 
-					private ISortState sortState = new SingleSortState();
+            @Override
+            public String getOutput()
+            {
+                return Time.now().toString();
+            }
+        });
+        this.utilities.add(new Utility("Duration.ONE_WEEK.toString()")
+        {
 
-					public ISortState getSortState() {
-						return sortState;
-					}
+            @Override
+            public String getOutput()
+            {
+                return Duration.ONE_WEEK.toString();
+            }
+        });
+        this.utilities.add(new Utility("Duration.ONE_WEEK.add(Duration.ONE_DAY).toString()")
+        {
 
-					public void setSortState(ISortState state) {
-						sortState = state;
-					}
-				}));
-		add(dataTable);
+            @Override
+            public String getOutput()
+            {
+                return Duration.ONE_WEEK.add(Duration.ONE_DAY).toString();
+            }
+        });
+        this.utilities.add(new Utility("Time.now().add(Duration.ONE_WEEK).toString()")
+        {
 
-		utilities.add(new Utility("Time.now().toString()") {
+            @Override
+            public String getOutput()
+            {
+                return Time.now().add(Duration.ONE_WEEK).toString();
+            }
+        });
+        this.utilities.add(new Utility("Bytes.valueOf(\"512K\") + Bytes.megabytes(1.3)")
+        {
 
-			@Override
-			public String getOutput() {
-				return Time.now().toString();
-			}
-		});
-		utilities.add(new Utility("Duration.ONE_WEEK.toString()") {
+            @Override
+            public String getOutput()
+            {
+                return Bytes.bytes(Bytes.valueOf("512K").bytes() + Bytes.megabytes(1.3).bytes())
+                        .toString();
+            }
+        });
+        this.utilities.add(new Utility("Parsing \'13 + 13\' using MetaPattern")
+        {
 
-			@Override
-			public String getOutput() {
-				return Duration.ONE_WEEK.toString();
-			}
-		});
-		utilities.add(new Utility(
-				"Duration.ONE_WEEK.add(Duration.ONE_DAY).toString()") {
+            @Override
+            public String getOutput()
+            {
+                final IntegerGroup a = new IntegerGroup(MetaPattern.DIGITS);
+                final IntegerGroup b = new IntegerGroup(MetaPattern.DIGITS);
+                final MetaPattern sum =
+                        new MetaPattern(new MetaPattern[] { a, MetaPattern.OPTIONAL_WHITESPACE,
+                                                           MetaPattern.PLUS,
+                                                           MetaPattern.OPTIONAL_WHITESPACE, b });
+                final Matcher matcher = sum.matcher("13 + 13");
+                if (matcher.matches())
+                {
+                    return Integer.toString(a.getInt(matcher) + b.getInt(matcher));
+                }
+                return "Failed to match.";
+            }
+        });
+    }
 
-			@Override
-			public String getOutput() {
-				return Duration.ONE_WEEK.add(Duration.ONE_DAY).toString();
-			}
-		});
-		utilities.add(new Utility(
-				"Time.now().add(Duration.ONE_WEEK).toString()") {
+    private abstract class Utility implements Serializable
+    {
 
-			@Override
-			public String getOutput() {
-				return Time.now().add(Duration.ONE_WEEK).toString();
-			}
-		});
-		utilities.add(new Utility(
-				"Bytes.valueOf(\"512K\") + Bytes.megabytes(1.3)") {
+        @SuppressWarnings("unused")
+        String code;
 
-			@Override
-			public String getOutput() {
-				return Bytes.bytes(
-						Bytes.valueOf("512K").bytes()
-								+ Bytes.megabytes(1.3).bytes()).toString();
-			}
-		});
-		utilities.add(new Utility("Parsing \'13 + 13\' using MetaPattern") {
+        public Utility(final String code)
+        {
+            this.code = code;
+        }
 
-			@Override
-			public String getOutput() {
-				IntegerGroup a = new IntegerGroup(MetaPattern.DIGITS);
-				IntegerGroup b = new IntegerGroup(MetaPattern.DIGITS);
-				MetaPattern sum = new MetaPattern(new MetaPattern[] { a,
-						MetaPattern.OPTIONAL_WHITESPACE, MetaPattern.PLUS,
-						MetaPattern.OPTIONAL_WHITESPACE, b });
-				Matcher matcher = sum.matcher("13 + 13");
-				if (matcher.matches()) {
-					return Integer.toString(a.getInt(matcher)
-							+ b.getInt(matcher));
-				}
-				return "Failed to match.";
-			}
-		});
-	}
+        public abstract String getOutput();
+    }
 }

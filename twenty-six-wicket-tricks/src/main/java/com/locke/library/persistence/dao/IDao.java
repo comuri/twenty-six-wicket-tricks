@@ -39,6 +39,11 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
     public void attach(final T object);
 
     /**
+     * Close this DAO, releasing any storage resources
+     */
+    public void close();
+
+    /**
      * CREATE object
      * 
      * @param object

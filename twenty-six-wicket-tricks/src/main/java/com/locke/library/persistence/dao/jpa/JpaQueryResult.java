@@ -31,6 +31,7 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
                                                                                          Iterable<T>,
                                                                                          Iterator<T>
 {
+    private int column = 0;
     private int index = 0;
     private final JpaQuery<T, PK> jpaQuery;
     private final int pageSize;
@@ -92,6 +93,11 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
         throw new UnsupportedOperationException();
     }
 
+    public void setColumn(final int column)
+    {
+        this.column = column;
+    }
+
     protected abstract void onBeforeNextPage();
 
     @SuppressWarnings("unchecked")
@@ -110,7 +116,7 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
                 final List<T> firstColumn = new ArrayList<T>();
                 for (final Object object : results)
                 {
-                    firstColumn.add((T)((Object[])object)[0]);
+                    firstColumn.add((T)((Object[])object)[this.column]);
                 }
                 this.results = firstColumn;
             }

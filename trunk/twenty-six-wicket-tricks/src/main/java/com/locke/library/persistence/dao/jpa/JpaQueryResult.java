@@ -37,10 +37,11 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
     private final int pageSize;
     private List<T> results;
 
-    public JpaQueryResult(final JpaQuery<T, PK> jpaQuery, final int pageSize)
+    public JpaQueryResult(final JpaQuery<T, PK> jpaQuery, final int pageSize, final int column)
     {
         this.jpaQuery = jpaQuery;
         this.pageSize = pageSize;
+        this.column = column;
         fetchPage();
     }
 
@@ -91,11 +92,6 @@ public abstract class JpaQueryResult<T extends IPersistent<PK>, PK extends Seria
     public void remove()
     {
         throw new UnsupportedOperationException();
-    }
-
-    public void setColumn(final int column)
-    {
-        this.column = column;
     }
 
     protected abstract void onBeforeNextPage();

@@ -162,7 +162,7 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
 
     public Iterable<T> page(final int pageSize, final int column)
     {
-        final JpaQueryResult<T, PK> queryResult = new JpaQueryResult<T, PK>(this, pageSize)
+        final JpaQueryResult<T, PK> queryResult = new JpaQueryResult<T, PK>(this, pageSize, column)
         {
             @Override
             protected void onBeforeNextPage()
@@ -170,7 +170,6 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
                 getEntityManager().close();
             }
         };
-        queryResult.setColumn(column);
         return queryResult;
     }
 

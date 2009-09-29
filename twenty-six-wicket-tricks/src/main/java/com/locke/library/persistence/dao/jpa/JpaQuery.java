@@ -88,6 +88,11 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
         this.queryText.add(query);
     }
 
+    public Iterable<T> column(final int column)
+    {
+        return page(Integer.MAX_VALUE, column);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -145,9 +150,19 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
         return page(Integer.MAX_VALUE);
     }
 
+    public Iterable<T> matches(final int column)
+    {
+        return page(Integer.MAX_VALUE, column);
+    }
+
     public Iterable<T> page(final int pageSize)
     {
-        return new JpaQueryResult<T, PK>(this, pageSize)
+        return page(pageSize, 0);
+    }
+
+    public Iterable<T> page(final int pageSize, final int column)
+    {
+        final JpaQueryResult<T, PK> queryResult = new JpaQueryResult<T, PK>(this, pageSize)
         {
             @Override
             protected void onBeforeNextPage()
@@ -155,6 +170,8 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
                 getEntityManager().close();
             }
         };
+        queryResult.setColumn(column);
+        return queryResult;
     }
 
     /**

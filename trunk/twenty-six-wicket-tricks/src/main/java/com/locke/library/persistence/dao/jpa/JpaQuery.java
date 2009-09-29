@@ -78,22 +78,45 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     }
 
     /**
+     * @param clauses
+     *            Clauses
+     */
+    public JpaQuery(final AbstractJpaDao<T, PK> dao, final String query)
+    {
+        this.clauses = null;
+        this.dao = dao;
+        this.queryText.add(query);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public int countMatches()
     {
-        // Add count clause before clauses passed in
-        final ClauseList newClauses = new ClauseList();
-        newClauses.add(new Count());
-        newClauses.addAll(this.clauses);
-
-        // Result of query should be a count
-        final Long count = (Long)build(newClauses).getSingleResult();
-        if (count == null)
+        if (this.clauses != null)
         {
-            return 0;
+            // Add count clause before clauses passed in
+            final ClauseList newClauses = new ClauseList();
+            newClauses.add(new Count());
+            newClauses.addAll(this.clauses);
+
+            // Result of query should be a count
+            final Long count = (Long)build(newClauses).getSingleResult();
+            if (count == null)
+            {
+                return 0;
+            }
+            return count.intValue();
         }
-        return count.intValue();
+        else
+        {
+            final Long count = (Long)build(null).getSingleResult();
+            if (count == null)
+            {
+                return 0;
+            }
+            return count.intValue();
+        }
     }
 
     /**
@@ -300,71 +323,77 @@ public class JpaQuery<T extends IPersistent<PK>, PK extends Serializable> implem
     @SuppressWarnings("unchecked")
     private Query build(final ClauseList clauses)
     {
-        this.queryText.clear();
-
-        // Count clause included?
-        final Count count = clauses.find(Count.class);
-        if (count != null)
+        if (clauses != null)
         {
-            this.queryText.add("select count(*)");
-        }
+            this.queryText.clear();
 
-        for (final Distinct distinct : clauses.findAll(Distinct.class))
-        {
-            this.queryText.add("select distinct target, target." + distinct.getField());
-        }
-
-        // Always add this
-        this.queryText.add("from " + this.dao.getName() + " as target");
-
-        // Add any fetch clauses
-        for (final Fetch fetch : clauses.findAll(Fetch.class))
-        {
-            this.queryText.add("left join fetch target." + fetch.getField() + " as ignored"
-                               + fetch.getField());
-        }
-
-        this.queryText.add("where 1=1");
-
-        // Add match constraints
-        final Match<T> match = clauses.find(Match.class);
-        if (match != null)
-        {
-            if (!match.getObject().getClass().isAssignableFrom(this.dao.type))
+            // Count clause included?
+            final Count count = clauses.find(Count.class);
+            if (count != null)
             {
-                throw new IllegalArgumentException("Invalid match clause: " + match);
+                this.queryText.add("select count(*)");
             }
-            onMatch(match);
-        }
 
-        // Add where constraints if no match clause
-        for (final Where where : clauses.findAll(Where.class))
-        {
-            this.queryText.and("(" + where + ")");
-        }
+            for (final Distinct distinct : clauses.findAll(Distinct.class))
+            {
+                this.queryText.add("select distinct target, target." + distinct.getField());
+            }
 
-        // Add sort ordering clauses
-        final Ascending ascending = clauses.find(Ascending.class);
-        if (ascending != null)
-        {
-            onAscending(ascending);
-        }
-        final Descending descending = clauses.find(Descending.class);
-        if (descending != null)
-        {
-            onDescending(descending);
+            // Always add this
+            this.queryText.add("from " + this.dao.getName() + " as target");
+
+            // Add any fetch clauses
+            for (final Fetch fetch : clauses.findAll(Fetch.class))
+            {
+                this.queryText.add("left join fetch target." + fetch.getField() + " as ignored"
+                                   + fetch.getField());
+            }
+
+            this.queryText.add("where 1=1");
+
+            // Add match constraints
+            final Match<T> match = clauses.find(Match.class);
+            if (match != null)
+            {
+                if (!match.getObject().getClass().isAssignableFrom(this.dao.type))
+                {
+                    throw new IllegalArgumentException("Invalid match clause: " + match);
+                }
+                onMatch(match);
+            }
+
+            // Add where constraints if no match clause
+            for (final Where where : clauses.findAll(Where.class))
+            {
+                this.queryText.and("(" + where + ")");
+            }
+
+            // Add sort ordering clauses
+            final Ascending ascending = clauses.find(Ascending.class);
+            if (ascending != null)
+            {
+                onAscending(ascending);
+            }
+            final Descending descending = clauses.find(Descending.class);
+            if (descending != null)
+            {
+                onDescending(descending);
+            }
         }
 
         // Create query
         final EntityManager entityManager = getEntityManager();
         final Query query = entityManager.createQuery(this.queryText.toString());
 
-        // Set range on query
-        final Range range = clauses.find(Range.class);
-        if (range != null)
+        if (clauses != null)
         {
-            query.setFirstResult((int)range.getFirst());
-            query.setMaxResults((int)range.getCount());
+            // Set range on query
+            final Range range = clauses.find(Range.class);
+            if (range != null)
+            {
+                query.setFirstResult((int)range.getFirst());
+                query.setMaxResults((int)range.getCount());
+            }
         }
         return query;
     }

@@ -77,6 +77,13 @@ public interface IDao<T extends IPersistent<PK>, PK extends Serializable>
     <C extends Clause> IQuery<T> query(C... clauses);
 
     /**
+     * @param query
+     *            Un-abstracted query string
+     * @return Query object
+     */
+    <C extends Clause> IQuery<T> query(String query);
+
+    /**
      * @param object
      *            Object whose properties should be attached to any matching
      *            persistent objects

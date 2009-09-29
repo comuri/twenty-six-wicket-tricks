@@ -155,6 +155,14 @@ public abstract class AbstractJpaDao<T extends IPersistent<PK>, PK extends Seria
     /**
      * {@inheritDoc}
      */
+    public <C extends Clause> IQuery<T> query(final String query)
+    {
+        return new JpaQuery<T, PK>(this, query);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void queryAttach(final T object)
     {
         processProperties(object, PropertyProcessingMode.ATTACH);

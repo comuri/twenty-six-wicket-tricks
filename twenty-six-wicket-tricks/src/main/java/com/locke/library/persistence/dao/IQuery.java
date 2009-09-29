@@ -40,8 +40,19 @@ public interface IQuery<T>
     Iterable<T> matches();
 
     /**
+     * @return All matching objects
+     */
+    Iterable<T> matches(int column);
+
+    /**
      * @return Pages through matching objects with the given page size. The
      *         session may be closed at the end of each page.
      */
     Iterable<T> page(int pageSize);
+
+    /**
+     * @return Pages through matching objects with the given page size. The
+     *         session may be closed at the end of each page.
+     */
+    Iterable<T> page(int pageSize, int column);
 }

@@ -43,6 +43,11 @@ public class MetaData implements Serializable
         return this.map.containsKey(key);
     }
 
+    public void copy(final MetaData that)
+    {
+        this.map.putAll(that.map);
+    }
+
     /**
      * @param <T>
      *            The type of the metadata object

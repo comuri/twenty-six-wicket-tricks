@@ -19,61 +19,73 @@ package com.locke.library.utilities.metadata;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Typesafe map of metadata information
  * 
  * @author Jonathan Locke
  */
-public class MetaData implements Serializable {
+public class MetaData implements Serializable
+{
 
-	private static final long serialVersionUID = -7051142109067684993L;
+    private static final long serialVersionUID = -7051142109067684993L;
 
-	private Map<Key<?>, Object> map = new HashMap<Key<?>, Object>();
+    private final Map<Key<?>, Object> map = new HashMap<Key<?>, Object>();
 
-	public static class Key<T> implements Serializable {
+    /**
+     * @param key
+     *            The metadata key
+     * @return True if the metadata exists
+     */
+    public boolean contains(final Key<?> key)
+    {
+        return this.map.containsKey(key);
+    }
 
-		private static final long serialVersionUID = 2117935572189337440L;
+    /**
+     * @param <T>
+     *            The type of the metadata object
+     * @param key
+     *            The key to the metadata
+     * @return The metadata object for the key
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(final Key<T> key)
+    {
+        return (T)this.map.get(key);
+    }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			return obj != null && getClass().isInstance(obj);
-		}
-	}
+    public Set<Key<?>> keySet()
+    {
+        return this.map.keySet();
+    }
 
-	/**
-	 * @param key
-	 *            The metadata key
-	 * @return True if the metadata exists
-	 */
-	public boolean contains(final Key<?> key) {
-		return map.containsKey(key);
-	}
+    /**
+     * @param <T>
+     *            The type of the metadata object
+     * @param key
+     *            Key to the given metadata
+     * @param object
+     *            The new metadata object for the key
+     */
+    public <T> void put(final Key<T> key, final T object)
+    {
+        this.map.put(key, object);
+    }
 
-	/**
-	 * @param <T>
-	 *            The type of the metadata object
-	 * @param key
-	 *            Key to the given metadata
-	 * @param object
-	 *            The new metadata object for the key
-	 */
-	public <T> void put(final Key<T> key, final T object) {
-		map.put(key, object);
-	}
+    public static class Key<T> implements Serializable
+    {
 
-	/**
-	 * @param <T>
-	 *            The type of the metadata object
-	 * @param key
-	 *            The key to the metadata
-	 * @return The metadata object for the key
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T get(final Key<T> key) {
-		return (T) map.get(key);
-	}
+        private static final long serialVersionUID = 2117935572189337440L;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(final Object obj)
+        {
+            return obj != null && getClass().isInstance(obj);
+        }
+    }
 }

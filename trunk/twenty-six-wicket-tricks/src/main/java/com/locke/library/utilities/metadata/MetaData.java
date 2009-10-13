@@ -79,7 +79,7 @@ public class MetaData implements Serializable
         this.map.put(key, object);
     }
 
-    public static class Key<T> implements Serializable
+    public static abstract class Key<T> implements Serializable
     {
         private static final long serialVersionUID = 2117935572189337440L;
 

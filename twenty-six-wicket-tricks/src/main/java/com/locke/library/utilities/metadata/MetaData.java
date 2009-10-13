@@ -81,7 +81,6 @@ public class MetaData implements Serializable
 
     public static class Key<T> implements Serializable
     {
-
         private static final long serialVersionUID = 2117935572189337440L;
 
         /**
@@ -91,6 +90,15 @@ public class MetaData implements Serializable
         public boolean equals(final Object obj)
         {
             return obj != null && getClass().isInstance(obj);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            return getClass().hashCode();
         }
     }
 }

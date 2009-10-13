@@ -35,29 +35,33 @@ import com.locke.library.web.wow.layout.layouts.FreeFormLayout;
  * 
  * @author Jonathan Locke
  */
-public interface IPanelExtractor<M> extends Serializable {
+public interface IPanelExtractor<M> extends Serializable
+{
 
-	/**
-	 * Meta-data key for the component's name. Component factories that don't
-	 * provide this value cannot participate in some layouts, such as
-	 * {@link FreeFormLayout}, which requires named components.
-	 */
-	public static final MetaData.Key<String> NAME = new MetaData.Key<String>();
+    /**
+     * Meta-data key for the component's name. Component factories that don't
+     * provide this value cannot participate in some layouts, such as
+     * {@link FreeFormLayout}, which requires named components.
+     */
+    public static final MetaData.Key<String> NAME = new MetaData.Key<String>()
+    {
+        private static final long serialVersionUID = 534380186021780199L;
+    };
 
-	/**
-	 * @param id
-	 *            The id the extractor should give the panel
-	 * @return The panel
-	 */
-	Panel extract(String id);
+    /**
+     * @param id
+     *            The id the extractor should give the panel
+     * @return The panel
+     */
+    Panel extract(String id);
 
-	/**
-	 * @return Meta-data for use in constructing and placing components
-	 */
-	MetaData getMetaData();
+    /**
+     * @return Meta-data for use in constructing and placing components
+     */
+    MetaData getMetaData();
 
-	/**
-	 * @return The model to be given to the extracted panel
-	 */
-	IModel<M> getModel();
+    /**
+     * @return The model to be given to the extracted panel
+     */
+    IModel<M> getModel();
 }

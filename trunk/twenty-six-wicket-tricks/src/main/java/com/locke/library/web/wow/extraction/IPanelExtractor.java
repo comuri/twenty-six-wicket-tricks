@@ -43,7 +43,7 @@ public interface IPanelExtractor<M> extends Serializable
      * provide this value cannot participate in some layouts, such as
      * {@link FreeFormLayout}, which requires named components.
      */
-    public static final MetaData.Key<String> NAME = new MetaData.Key<String>()
+    public static final MetaData.Key<String> NAME = new MetaData.Key<String>(String.class)
     {
         private static final long serialVersionUID = 534380186021780199L;
     };

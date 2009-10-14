@@ -28,7 +28,6 @@ import java.util.Set;
  */
 public class MetaData implements Serializable
 {
-
     private static final long serialVersionUID = -7051142109067684993L;
 
     private final Map<Key<?>, Object> map = new HashMap<Key<?>, Object>();
@@ -58,7 +57,12 @@ public class MetaData implements Serializable
     @SuppressWarnings("unchecked")
     public <T> T get(final Key<T> key)
     {
-        return (T)this.map.get(key);
+        final Object value = this.map.get(key);
+        if (key.getValueType().isInstance(value))
+        {
+            return (T)value;
+        }
+        return null;
     }
 
     public Set<Key<?>> keySet()
@@ -82,14 +86,25 @@ public class MetaData implements Serializable
     public static abstract class Key<T> implements Serializable
     {
         private static final long serialVersionUID = 2117935572189337440L;
+        private final Class<T> valueType;
+
+        public Key(final Class<T> type)
+        {
+            this.valueType = type;
+        }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public boolean equals(final Object obj)
+        public boolean equals(final Object that)
         {
-            return obj != null && getClass().isInstance(obj);
+            return that != null && getClass().equals(that.getClass());
+        }
+
+        public Class<?> getValueType()
+        {
+            return this.valueType;
         }
 
         /**

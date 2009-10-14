@@ -54,7 +54,7 @@ public class BeanPropertyPanelExtractor implements Iterable<IPanelExtractor<?>>
      * Meta-data key for bean property descriptor
      */
     public static final MetaData.Key<PropertyDescriptor> PROPERTY =
-            new MetaData.Key<PropertyDescriptor>()
+            new MetaData.Key<PropertyDescriptor>(PropertyDescriptor.class)
             {
                 private static final long serialVersionUID = 534380186021780199L;
             };

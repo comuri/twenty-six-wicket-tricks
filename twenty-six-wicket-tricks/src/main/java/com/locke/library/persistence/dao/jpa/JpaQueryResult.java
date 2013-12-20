@@ -1,16 +1,19 @@
-/*****************************************************************/
-/*                                                               */
-/* (C) Copyright 2009 by Networks In Motion, Inc.                */
-/*                                                               */
-/* The information contained herein is confidential, proprietary */
-/* to Networks In Motion, Inc., and considered a trade secret as */
-/* defined in section 499C of the penal code of the State of     */
-/* California. Use of this information by anyone other than      */
-/* authorized employees of Networks In Motion is granted only    */
-/* under a written non-disclosure agreement, expressly           */
-/* prescribing the scope and manner of such use.                 */
-/*                                                               */
-/*****************************************************************/
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.locke.library.persistence.dao.jpa;
 
